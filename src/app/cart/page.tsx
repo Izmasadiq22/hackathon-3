@@ -1,111 +1,136 @@
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { RiDeleteBin6Line } from 'react-icons/ri'
-import Field from '../components/Field'
+import Link from "next/link";
+import { HiOutlineTrophy } from "react-icons/hi2";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { LiaShippingFastSolid } from "react-icons/lia";
+import { MdOutlineSupportAgent } from "react-icons/md";
+import Image from "next/image";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import Field from "../components/Field";
 
+export default function Cart() {
+  return (
+    <div>
+      <Link href="/cart"></Link>
 
-function ViewCart() {
-    return (
-        <div className="max-w-screen-2xl container mx-auto pb-8 px-4">
-            <div className='bg-[#faf4f4]'>
-               
+      {/* Hero Section */}
+      <section
+        className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
+        style={{
+          backgroundImage: "url('/images/Rectangle 1.png')",
+        }}
+      >
+        <div className="w-fit">
+          <div className="flex flex-col justify-center items-center">
+            <div className="w-[60px] h-[60px] flex items-center justify-center">
+              <Image src="/images/logo.png" alt="logo" width={50} height={100} />
             </div>
-            {/* Banner Section */}
-            <div className="relative text-black">
-                <Image
-                    src="/images/Rectangle 1.png" 
-                    alt="Shop Banner"
-                    height={400}
-                    width={1600}
-                    className="w-full h-[200px] md:h-auto object-cover"
-                />
-                <h1 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl md:text-5xl font-semibold">
-                    Cart
-                </h1>
-                {/* Breadcrumb Section */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-14">
-                    <p className="text-gray-700 text-xs md:text-xl flex items-center">
-                        <Link href="/" className="font-bold hover:underline">Home</Link>
-                        <span className="font-bold mx-2">{'>'}</span>
-                        <Link href="/shop" className=" hover:underline">Cart</Link>
-                    </p>
-                </div>
+            <div>
+              <h2 className="font-medium text-[48px] text-black">Cart</h2>
             </div>
+          </div>
+          <div className="flex items-center justify-center gap-1">
+            <Link href="/" className="font-semibold text-[16px] text-black">
+              Home
+            </Link>
+            <Icon icon="material-symbols:keyboard-arrow-right" className="w-5 h-5 font-bold" />
+            <p className="font-light text-[16px] text-black">Cart</p>
+          </div>
+        </div>
+      </section>
 
-            {/* Cart Table Section */}
-            <div className="mt-8 flex flex-col lg:flex-row justify-between md:gap-8">
-                {/* Cart Items */}
-<div className="w-full lg:w-3/4 bg-white rounded-lg p-4 sm:p-6">
-    <table className="w-full text-xs md:text-lg table-auto border-collapse">
-        <thead className="bg-[#FFF9E5] text-gray-800">
-            <tr>
-                <th className="py-3 text-left">Product</th>
-                <th className="py-3 text-left hidden lg:table-cell">Price</th> {/* Hidden on small devices, visible on large */}
-                <th className="py-3 text-left">Quantity</th>
-                <th className="py-3 text-left">Subtotal</th>
-                <th className="py-3 text-left"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr className="border-t">
-                <td className="flex flex-col md:flex-row items-center py-4">
-                    <Image
-                        src='/shop14.jpeg'
-                        height={120}
-                        width={120}
-                        alt="Asgaard Sofa"
+      {/* Cart Table */}
+      <section className="p-6 lg:p-10">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
+          {/* Product Table */}
+          <div className="w-full lg:w-3/4 overflow-x-auto">
+            <table className="w-full border-collapse min-w-[600px]">
+              <thead>
+                <tr className="bg-[#FFF3E3] text-left">
+                  <th className="p-3">Product</th>
+                  <th className="p-3">Price</th>
+                  <th className="p-3">Quantity</th>
+                  <th className="p-3">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="p-3 flex items-center space-x-4">
+                    <img
+                      src="/images/Group 160.png"
+                      alt="Asgaard sofa"
+                      className="w-16 h-16 object-cover"
                     />
-                    <p className="ml-4 text-gray-700 text-sm sm:text-base">Asgaard Sofa <br /> x 1</p>
-                </td>
-                <td className="py-4 text-xs md:text-lg text-gray-500 hidden lg:table-cell">Rs: 250,000.00</td> {/* Hidden on small devices, visible on large */}
-                <td className="py-4 text-xs md:text-lg text-gray-500">
-                    <input type="number" value="1" className="w-12 text-xs md:text-lg text-center border md:p-2 rounded-md" />
-                </td>
-                <td className="py-4 text-right text-gray-700 text-xs md:text-sm sm:text-base">Rs: 250,000.00</td>
-                <td className="py-4 text-center">
-                    <RiDeleteBin6Line className="hidden lg:table-cell text-red-600 ml-4 cursor-pointer hover:text-red-800" size={20} />
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+                    <span>Asgaard sofa</span>
+                  </td>
+                  <td className="p-3">Rs. 250,000.00</td>
+                  <td className="p-3">
+                    <input
+                      type="number"
+                      min="1"
+                      value="1"
+                      className="w-16 border p-0 text-center"
+                    />
+                  </td>
+                  <td className="p-3">Rs. 250,000.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-
-
-                {/* Cart Totals Section */}
-                <div className="w-full lg:w-2/6 bg-[#FFF9E5] rounded-md p-10 mt-8 lg:mt-0">
-                    <h2 className="text-2xl font-semibold mb-4 text-center">Cart Totals</h2>
-                    <table className="w-full table-auto border-collapse">
-                        <thead>
-                            <tr>
-                                <th className="py-3 text-left">Subtotal</th>
-                                <th className="py-3 text-right text-gray-400">Rs: 250,000.00</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td className="py-3 text-left font-bold">Total</td>
-                                <td className="py-3 text-right text-lg font-bold text-yellow-700">Rs: 250,000.00</td>
-                            </tr>
-                            <tr>
-                                <td colSpan={2} className="py-4">
-                                <Link href="/checkout">
+          {/* Cart Totals */}
+          <div className="w-full lg:w-1/4 bg-[#FFF3E3] p-6 lg:p-14">
+            <h2 className="text-lg font-semibold mb-4">Cart Totals</h2>
+            <div className="flex justify-between mb-2">
+              <span>Subtotal:</span>
+              <span>Rs. 250,000.00</span>
+            </div>
+            <div className="flex justify-between font-bold mb-4">
+              <span>Total:</span>
+              <span>Rs. 250,000.00</span>
+            </div>
+            <Link href="/checkout">
               <button className="w-full bg-orange-500 text-white py-2 font-bold hover:bg-orange-600">
                 Check Out
               </button>
             </Link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div className='my-10'>
-                <Field />
-            </div>
+          </div>
         </div>
-    )
-}
+      </section>
+      <Field/>
+{/* Icons Section */}
+      <div className="bg-[#FFF3E3] p-10 flex flex-wrap gap-6 justify-center">
+        <div className="flex flex-col items-center text-center w-60">
+          <HiOutlineTrophy className="h-14 w-14 text-black mb-3" />
+          <span className="font-sans font-bold text-black text-lg">
+            High Quality
+          </span>
+          <span className="text-gray-400 text-sm">Delivery on all orders</span>
+        </div>
 
-export default ViewCart;
+        <div className="flex flex-col items-center text-center w-60">
+          <IoShieldCheckmarkOutline className="h-14 w-14 text-black mb-3" />
+          <span className="font-sans font-bold text-black text-lg">
+            Warranty Protection
+          </span>
+          <span className="text-gray-400 text-sm">Delivery on all orders</span>
+        </div>
+
+        <div className="flex flex-col items-center text-center w-60">
+          <LiaShippingFastSolid className="h-14 w-14 text-black mb-3" />
+          <span className="font-sans font-bold text-black text-lg">
+            Free Shipping
+          </span>
+          <span className="text-gray-400 text-sm">Delivery on all orders</span>
+        </div>
+
+        <div className="flex flex-col items-center text-center w-60">
+          <MdOutlineSupportAgent className="h-14 w-14 text-black mb-3" />
+          <span className="font-sans font-bold text-black text-lg">
+            24/7 Support
+          </span>
+          <span className="text-gray-400 text-sm">Delivery on all orders</span>
+        </div>
+      </div>
+    </div>
+  );
+}

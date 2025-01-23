@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { createClient } from "@sanity/client";
 import Image from "next/image";
 import Link from "next/link";
-import { urlFor } from "@/sanity/lib/image";
+import { urlFor } from "@/sanity/lib/image"; // Assuming this function is working properly
 
 const sanity = createClient({
   projectId: "j1efm4vy", // Replace with your project ID
@@ -19,7 +19,7 @@ export interface Product {
   price: number;
   imageUrl: string;
   tags: string;
-  slug: string;
+  slug: { current: string }; // Ensure the slug has the "current" field
   discountPercentage: number;
   discountedPrice: number;
   isNew: boolean;
@@ -30,8 +30,8 @@ const ProductCard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [cart, setCart] = useState<Product[]>([]); // Added state for cart
-  const [visibleProducts, setVisibleProducts] = useState<number>(8); // State to track number of visible products
+  const [cart, setCart] = useState<Product[]>([]);
+  const [visibleProducts, setVisibleProducts] = useState<number>(8);
 
   const fetchProducts = async () => {
     try {
@@ -40,7 +40,7 @@ const ProductCard: React.FC = () => {
         _id,
         title,
         price,
-        "imageUrl": productImage.asset->url, 
+        "imageUrl": productImage.asset->url,
         tags,
         slug,
         discountPercentage,
@@ -60,7 +60,7 @@ const ProductCard: React.FC = () => {
   };
 
   const addToCart = (product: Product) => {
-    setCart((prevCart) => [...prevCart, product]); // Adds product to the cart
+    setCart((prevCart) => [...prevCart, product]);
   };
 
   const getTotalPrice = () => {
@@ -71,7 +71,7 @@ const ProductCard: React.FC = () => {
   };
 
   const handleShowMore = () => {
-    setVisibleProducts((prev) => prev + 8); // Show next 8 products on click
+    setVisibleProducts((prev) => prev + 8);
   };
 
   const [expandedDescription, setExpandedDescription] = useState<{ [key: string]: boolean }>({});
@@ -100,67 +100,63 @@ const ProductCard: React.FC = () => {
             className="relative bg-white shadow-md rounded-md overflow-hidden transform hover:scale-105 transition-all duration-300"
           >
             {/* Product Image */}
-           <Link
-                     href ={`/product/${product.slug.current}`}>
-                     {product.imageUrl && (
-                       <Image
-                         src={urlFor(product.imageUrl).url()}
-                         alt={product.title}
-                         width={400}
-                         height={300}
-                         className="w-full h-64 object-cover"
-                       />
-                       )}
-  
-         
-                     {/* Product Details */}
-                     {/* <div className="p-4"> */}
-                       <h3 className="text-lg font-semibold">{product.title}</h3>
-                       <p className="text-sm text-gray-500">{product.tags}</p>
-                       </Link>
-              {/* Description with truncation */}
-              <div className="text-sm text-gray-600 mt-2">
-                {expandedDescription[product._id] ? (
-                  product.description // Show full description
-                ) : (
-                  <>{product.description?.slice(0, 150)}...</> // Show first 150 characters
-                )}
-                
-              </div>
-
-              {/* Toggle Read More */}
-              <button
-                onClick={() => toggleDescription(product._id)}
-                className="text-[#B88E2F] text-sm mt-2"
-              >
-                {expandedDescription[product._id] ? "Read Less" : "Read More"}
-              </button>
-
-              <div className="mt-2">
-                <span className="text-[#B88E2F] font-bold text-lg">
-                  ₹{product.discountedPrice || product.price}
-                </span>
-                {product.discountedPrice && (
-                  <span className="text-gray-400 line-through text-sm ml-2">
-                    ₹{product.price}
-                  </span>
-                )}
-              </div>
-              {product.discountPercentage && (
-                <p className="text-green-600 text-sm font-medium mt-1">
-                  {product.discountPercentage}% OFF
-                </p>
+            <Link href={`/product/${product.slug.current}`}>
+              {product.imageUrl && (
+                <Image
+                  src={urlFor(product.imageUrl).url()} // Assuming this returns a valid URL
+                  alt={product.title}
+                  width={400}
+                  height={300}
+                  className="w-full h-64 object-cover"
+                />
               )}
+            </Link>
 
-              {/* Add to Cart Button */}
-              <button
-                onClick={() => addToCart(product)} // Calls the addToCart function
-                className="mt-4 bg-[#B88E2F] text-white py-2 px-4 rounded hover:bg-[#9A703A] transition"
-              >
-                Add to Cart
-              </button>
+            {/* Product Details */}
+            <h3 className="text-lg font-semibold">{product.title}</h3>
+            <p className="text-sm text-gray-500">{product.tags}</p>
+
+            {/* Description with truncation */}
+            <div className="text-sm text-gray-600 mt-2">
+              {expandedDescription[product._id] ? (
+                product.description // Show full description
+              ) : (
+                <>{product.description?.slice(0, 150)}...</> // Show first 150 characters
+              )}
             </div>
-          
+
+            {/* Toggle Read More */}
+            <button
+              onClick={() => toggleDescription(product._id)}
+              className="text-[#B88E2F] text-sm mt-2"
+            >
+              {expandedDescription[product._id] ? "Read Less" : "Read More"}
+            </button>
+
+            <div className="mt-2">
+              <span className="text-[#B88E2F] font-bold text-lg">
+                ₹{product.discountedPrice || product.price}
+              </span>
+              {product.discountedPrice && (
+                <span className="text-gray-400 line-through text-sm ml-2">
+                  ₹{product.price}
+                </span>
+              )}
+            </div>
+            {product.discountPercentage && (
+              <p className="text-green-600 text-sm font-medium mt-1">
+                {product.discountPercentage}% OFF
+              </p>
+            )}
+
+            {/* Add to Cart Button */}
+            <button
+              onClick={() => addToCart(product)} // Calls the addToCart function
+              className="mt-4 bg-[#B88E2F] text-white py-2 px-4 rounded hover:bg-[#9A703A] transition"
+            >
+              Add to Cart
+            </button>
+          </div>
         ))}
       </div>
 
@@ -188,13 +184,13 @@ const ProductCard: React.FC = () => {
             {cart.map((item, index) => (
               <li key={index} className="flex justify-between">
                 <span>{item.title}</span>
-                <span>${item.discountedPrice || item.price}</span>
+                <span>₹{item.discountedPrice || item.price}</span>
               </li>
             ))}
           </ul>
           <div className="mt-4 flex justify-between">
             <span>Total</span>
-            <span>${getTotalPrice()}</span>
+            <span>₹{getTotalPrice()}</span>
           </div>
         </div>
       )}
@@ -203,7 +199,3 @@ const ProductCard: React.FC = () => {
 };
 
 export default ProductCard;
-
-
-
-
