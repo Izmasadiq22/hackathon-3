@@ -1,5 +1,6 @@
 import Image from "next/image";
-export default function Browse() {
+
+export default function Browse(): JSX.Element {
   return (
     <div className="flex flex-col gap-[30px] md:gap-[60px] pt-[30px] md:pt-0 items-center bg-[#F4F5F7] px-4">
       <div className="w-fit text-center">
@@ -9,53 +10,24 @@ export default function Browse() {
         </p>
       </div>
       <div className="flex flex-wrap justify-center gap-[20px]">
-        {/* Dining Section */}
-        <div className="w-[100%] sm:w-[381px] flex flex-col gap-[30px]">
-          <div className="">
+        {[
+          { src: "/images/dining.png", alt: "Diningroom", title: "Dining" },
+          { src: "/images/living.png", alt: "Livingroom", title: "Living" },
+          { src: "/images/bedroom.png", alt: "Bedroom image", title: "Bedroom" },
+        ].map((item, index) => (
+          <div key={index} className="w-[100%] sm:w-[381px] flex flex-col gap-[30px]">
             <Image
-              src="/images/dining.png"
-              alt="Diningroom"
+              src={item.src}
+              alt={item.alt}
               className="rounded-[4px] w-full"
               width={900}
               height={100}
             />
+            <div className="w-full text-center">
+              <p className="font-semibold text-[24px] text-Font">{item.title}</p>
+            </div>
           </div>
-          <div className="w-full text-center">
-            <p className="font-semibold text-[24px] text-Font">Dining</p>
-          </div>
-        </div>
-
-        {/* Living Section */}
-        <div className="w-[100%] sm:w-[381px] flex flex-col gap-[28px]">
-          <div className="">
-            <Image
-              src="/images/living.png"
-              alt="Livingroom"
-              className="rounded-[4px] w-full"
-              width={900}
-              height={100}
-            />
-          </div>
-          <div className="w-full text-center">
-            <p className="font-semibold text-[24px] text-Font">Living</p>
-          </div>
-        </div>
-
-        {/* Bedroom Section */}
-        <div className="w-[100%] sm:w-[381px] flex flex-col gap-[30px]">
-          <div className="">
-            <Image
-              src="/images/bedroom.png"
-              alt="Bedroom image"
-              className="rounded-[4px] w-full"
-              width={900}
-              height={100}
-            />
-          </div>
-          <div className="w-full text-center">
-            <p className="font-semibold text-[24px] text-Font">Bedroom</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

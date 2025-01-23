@@ -4,88 +4,81 @@ import React, { useState, useEffect } from "react";
 import { createClient } from "@sanity/client";
 import Image from "next/image";
 import Link from "next/link";
-import { urlFor } from "@/sanity/lib/image"; // Assuming this function is working properly
+import { urlFor } from "@/sanity/lib/image";
 
 const sanity = createClient({
-  projectId: "j1efm4vy", // Replace with your project ID
-  dataset: "production", // Replace with your dataset name
+  projectId: "j1efm4vy",
+  dataset: "production",
   useCdn: true,
   apiVersion: "2023-01-01",
 });
 
-export interface Product {
+// Product Interface
+interface Product {
   _id: string;
   title: string;
   price: number;
   imageUrl: string;
   tags: string;
-  slug: { current: string }; // Ensure the slug has the "current" field
-  discountPercentage: number;
-  discountedPrice: number;
+  slug: { current: string };
+  discountPercentage?: number;
+  discountedPrice?: number;
   isNew: boolean;
   description: string;
 }
 
 const ProductCard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cart, setCart] = useState<Product[]>([]);
-  const [visibleProducts, setVisibleProducts] = useState<number>(8);
+  const [visibleProducts, setVisibleProducts] = useState(8);
+  const [expandedDescription, setExpandedDescription] = useState<Record<string, boolean>>({});
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const query = `*[_type == "product"]{
-        _id,
-        title,
-        price,
-        "imageUrl": productImage.asset->url,
-        tags,
-        slug,
-        discountPercentage,
-        discountedPrice,
-        isNew,
-        description
-      }`;
+  // Fetch products from Sanity
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const query = `*[_type == "product"]{
+          _id,
+          title,
+          price,
+          "imageUrl": productImage.asset->url,
+          tags,
+          slug,
+          discountPercentage,
+          discountedPrice,
+          isNew,
+          description
+        }`;
+        const data = await sanity.fetch<Product[]>(query);
+        setProducts(data);
+      } catch (err) {
+        setError("Failed to fetch products.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
-      const data = await sanity.fetch(query);
-      setProducts(data);
-    } catch (error) {
-      setError("Error fetching products.");
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Add product to cart
   const addToCart = (product: Product) => {
     setCart((prevCart) => [...prevCart, product]);
   };
 
-  const getTotalPrice = () => {
-    return cart.reduce(
-      (total, product) => total + (product.discountedPrice || product.price),
-      0
-    );
-  };
+  // Calculate total cart price
+  const getTotalPrice = (): number =>
+    cart.reduce((total, product) => total + (product.discountedPrice || product.price), 0);
 
-  const handleShowMore = () => {
-    setVisibleProducts((prev) => prev + 8);
-  };
-
-  const [expandedDescription, setExpandedDescription] = useState<{ [key: string]: boolean }>({});
-
+  // Toggle description expansion
   const toggleDescription = (id: string) => {
-    setExpandedDescription((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setExpandedDescription((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  // Handle "See More" functionality
+  const handleShowMore = () => setVisibleProducts((prev) => prev + 8);
 
   if (loading) return <div>Loading products...</div>;
   if (error) return <div>{error}</div>;
@@ -103,7 +96,7 @@ const ProductCard: React.FC = () => {
             <Link href={`/product/${product.slug.current}`}>
               {product.imageUrl && (
                 <Image
-                  src={urlFor(product.imageUrl).url()} // Assuming this returns a valid URL
+                  src={urlFor(product.imageUrl).url()}
                   alt={product.title}
                   width={400}
                   height={300}
@@ -113,54 +106,53 @@ const ProductCard: React.FC = () => {
             </Link>
 
             {/* Product Details */}
-            <h3 className="text-lg font-semibold">{product.title}</h3>
-            <p className="text-sm text-gray-500">{product.tags}</p>
+            <div className="p-4">
+              <h3 className="text-lg font-semibold">{product.title}</h3>
+              <p className="text-sm text-gray-500">{product.tags}</p>
 
-            {/* Description with truncation */}
-            <div className="text-sm text-gray-600 mt-2">
-              {expandedDescription[product._id] ? (
-                product.description // Show full description
-              ) : (
-                <>{product.description?.slice(0, 150)}...</> // Show first 150 characters
-              )}
-            </div>
-
-            {/* Toggle Read More */}
-            <button
-              onClick={() => toggleDescription(product._id)}
-              className="text-[#B88E2F] text-sm mt-2"
-            >
-              {expandedDescription[product._id] ? "Read Less" : "Read More"}
-            </button>
-
-            <div className="mt-2">
-              <span className="text-[#B88E2F] font-bold text-lg">
-                ${product.discountedPrice || product.price}
-              </span>
-              {product.discountedPrice && (
-                <span className="text-gray-400 line-through text-sm ml-2">
-                  ${product.price}
-                </span>
-              )}
-            </div>
-            {product.discountPercentage && (
-              <p className="text-green-600 text-sm font-medium mt-1">
-                {product.discountPercentage}% OFF
+              {/* Description */}
+              <p className="text-sm text-gray-600 mt-2">
+                {expandedDescription[product._id]
+                  ? product.description
+                  : `${product.description?.slice(0, 150)}...`}
               </p>
-            )}
+              <button
+                onClick={() => toggleDescription(product._id)}
+                className="text-[#B88E2F] text-sm mt-2"
+              >
+                {expandedDescription[product._id] ? "Read Less" : "Read More"}
+              </button>
 
-            {/* Add to Cart Button */}
-            <button
-              onClick={() => addToCart(product)} // Calls the addToCart function
-              className="mt-4 bg-[#B88E2F] text-white py-2 px-4 rounded hover:bg-[#9A703A] transition"
-            >
-              Add to Cart
-            </button>
+              {/* Price */}
+              <div className="mt-2">
+                <span className="text-[#B88E2F] font-bold text-lg">
+                  ${product.discountedPrice || product.price}
+                </span>
+                {product.discountedPrice && (
+                  <span className="text-gray-400 line-through text-sm ml-2">
+                    ${product.price}
+                  </span>
+                )}
+              </div>
+              {product.discountPercentage && (
+                <p className="text-green-600 text-sm font-medium mt-1">
+                  {product.discountPercentage}% OFF
+                </p>
+              )}
+
+              {/* Add to Cart Button */}
+              <button
+                onClick={() => addToCart(product)}
+                className="mt-4 bg-[#B88E2F] text-white py-2 px-4 rounded hover:bg-[#9A703A] transition"
+              >
+                Add to Cart
+              </button>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Show More Button */}
+      {/* See More Button */}
       {visibleProducts < products.length && (
         <div className="flex justify-center mt-8">
           <button
@@ -172,7 +164,7 @@ const ProductCard: React.FC = () => {
         </div>
       )}
 
-      {/* Cart Details */}
+      {/* Cart Summary */}
       <div className="fixed bottom-4 right-4 bg-[#B88E2F] text-white py-2 px-4 rounded-full cursor-pointer hover:bg-[#9A703A]">
         <span>Cart: {cart.length} items</span>
       </div>

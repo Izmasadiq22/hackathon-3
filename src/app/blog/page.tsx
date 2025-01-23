@@ -4,6 +4,7 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import Image from "next/image";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function Blog() {
   const blogPosts = [
@@ -49,16 +50,33 @@ export default function Blog() {
 
   return (
     <div>
-      <Link href="/"></Link>
+      {/* Header Section */}
       <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
-        style={{
-          backgroundImage: "url('/images/Rectangle 1.png')",
-        }}
+        style={{ backgroundImage: "url('/images/Rectangle 1.png')" }}
       >
-        <div className="bg-opacity-70 px-4 py-2 rounded-md">
-          <h1 className="text-4xl font-bold">Blog</h1>
-          <p className="text-sm mt-2 text-gray-600">Home &gt; Blog</p>
+        <div className="w-fit">
+          <div className="flex flex-col justify-center items-center">
+            <div className="w-[60px] h-[60px] flex items-center justify-center">
+              <Image
+                src="/images/logo.png"
+                alt="logo"
+                width={50}
+                height={100}
+              />
+            </div>
+            <h2 className="font-medium text-[48px] text-black">Blog</h2>
+          </div>
+          <div className="flex items-center justify-center gap-1">
+            <Link href="/" className="font-semibold text-[16px] text-black">
+              Home
+            </Link>
+            <Icon
+              icon="material-symbols:keyboard-arrow-right"
+              className="w-5 h-5 font-bold"
+            />
+            <p className="font-light text-[16px] text-black">Blog</p>
+          </div>
         </div>
       </section>
 
@@ -75,14 +93,13 @@ export default function Blog() {
                 className="w-full rounded-lg"
               />
               <div className="text-sm text-gray-500">
-                <span>{post.author}</span> &middot; <span>{post.date}</span>{" "}
-                &middot; <span>{post.category}</span>
+                <span>{post.author}</span> &middot; <span>{post.date}</span> &middot; <span>{post.category}</span>
               </div>
               <h2 className="text-xl font-semibold">{post.title}</h2>
               <p className="text-gray-700">{post.description}</p>
-              <a href="#" className="text-orange-500 font-semibold">
+              <Link href="#" className="text-orange-500 font-semibold">
                 Read more
-              </a>
+              </Link>
             </div>
           ))}
 
@@ -118,136 +135,60 @@ export default function Blog() {
               ))}
             </ul>
           </div>
-       
-      <div className="flex flex-col gap-[39px]">
-        <div className="flex gap-[12px] items-center">
-          <Image
-            src="/images/pic1.png"
-            alt="recentimg"
-            height={120}
-            width={120}
-            className="rounded-[10px]"
-          />
-          <div>
-            <p className="text-[14px] text-black font-normal">
-              Going all-in with millennial design
-            </p>
-            <p className="text-[12px] text-[#9F9F9F] font-normal">
-              03 Aug 2022
-            </p>
-          </div>
-        </div>
 
-        <div className="flex gap-[12px] items-center">
-          <Image
-            src="/images/pic2.png"
-            alt="recentimg"
-            height={120}
-            width={120}
-            className="rounded-[10px]"
-          />
-          <div>
-            <p className="text-[14px] text-black font-normal">
-              Exploring new ways of decorating
-            </p>
-            <p className="text-[12px] text-[#9F9F9F] font-normal">
-              14 Oct 2022
-            </p>
+          {/* Recent Posts */}
+          <div className="flex flex-col gap-6">
+            {[1, 2, 3, 4, 5].map((item, idx) => (
+              <div key={idx} className="flex gap-3 items-center">
+                <Image
+                  src={`/images/pic${item}.png`}
+                  alt="recent-img"
+                  height={120}
+                  width={120}
+                  className="rounded-lg"
+                />
+                <div>
+                  <p className="text-sm text-black font-normal">
+                    Recent post title {item}
+                  </p>
+                  <p className="text-xs text-gray-500">03 Aug 2022</p>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-
-        <div className="flex gap-[12px] items-center">
-          <Image
-            src="/images/pic3.png"
-            alt="recentimg"
-            height={120}
-            width={120}
-            className="rounded-[10px]"
-          />
-          <div>
-            <p className="text-[14px] text-black font-normal">
-              Handmade pieces that took time to make
-            </p>
-            <p className="text-[12px] text-[#9F9F9F] font-normal">
-              10 Oct 2022
-            </p>
-          </div>
-        </div>
-
-        <div className="flex gap-[12px] items-center">
-          <Image
-            src="/images/pic4.png"
-            alt="recentimg"
-            height={120}
-            width={120}
-            className="rounded-[10px]"
-          />
-          <div>
-            <p className="text-[14px] text-black font-normal">
-              Modern items in motion
-            </p>
-            <p className="text-[12px] text-[#9F9F9F] font-normal">
-              05 Oct 2022
-            </p>
-          </div>
-        </div>
-
-        <div className="flex gap-[12px] items-center">
-          <Image
-            src="/images/pic5.png"
-            alt="recentimg"
-            height={120}
-            width={120}
-            className="rounded-[10px]"
-          />
-          <div>
-            <p className="text-[14px] text-black font-normal">
-              Colorful office redesign
-            </p>
-            <p className="text-[12px] text-[#9F9F9F] font-normal">
-              02 Oct 2022
-            </p>
-          </div>
-        </div>
-      </div>
-
-    
-      </aside>
+        </aside>
       </div>
 
       {/* Icons Section */}
       <div className="bg-[#FFF3E3] p-10 flex flex-wrap gap-6 justify-center">
-        <div className="flex flex-col items-center text-center w-60">
-          <HiOutlineTrophy className="h-14 w-14 text-black mb-3" />
-          <span className="font-sans font-bold text-black text-lg">
-            High Quality
-          </span>
-          <span className="text-gray-400 text-sm">Delivery on all orders</span>
-        </div>
-
-        <div className="flex flex-col items-center text-center w-60">
-          <IoShieldCheckmarkOutline className="h-14 w-14 text-black mb-3" />
-          <span className="font-sans font-bold text-black text-lg">
-            Warranty Protection
-          </span>
-          <span className="text-gray-400 text-sm">Delivery on all orders</span>
-        </div>
-
-        <div className="flex flex-col items-center text-center w-60">
-          <LiaShippingFastSolid className="h-14 w-14 text-black mb-3" />
-          <span className="font-sans font-bold text-black text-lg">
-            Free Shipping
-          </span>
-          <span className="text-gray-400 text-sm">Delivery on all orders</span>
-        </div>
-
-        <div className="flex flex-col items-center text-center w-60">
-          <MdOutlineSupportAgent className="h-14 w-14 text-black mb-3" />
-          <span className="font-sans font-bold text-black text-lg">
-            24/7 Support
-          </span>
-          <span className="text-gray-400 text-sm">Delivery on all orders</span>
-        </div>
+        {[
+          {
+            icon: HiOutlineTrophy,
+            title: "High Quality",
+            description: "Delivery on all orders",
+          },
+          {
+            icon: IoShieldCheckmarkOutline,
+            title: "Warranty Protection",
+            description: "Delivery on all orders",
+          },
+          {
+            icon: LiaShippingFastSolid,
+            title: "Free Shipping",
+            description: "Delivery on all orders",
+          },
+          {
+            icon: MdOutlineSupportAgent,
+            title: "24/7 Support",
+            description: "Delivery on all orders",
+          },
+        ].map((item, index) => (
+          <div key={index} className="flex flex-col items-center text-center w-60">
+            <item.icon className="h-14 w-14 text-black mb-3" />
+            <span className="font-bold text-black text-lg">{item.title}</span>
+            <span className="text-gray-400 text-sm">{item.description}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
