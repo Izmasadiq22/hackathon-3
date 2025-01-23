@@ -135,11 +135,11 @@ const ProductCard: React.FC = () => {
 
             <div className="mt-2">
               <span className="text-[#B88E2F] font-bold text-lg">
-                ₹{product.discountedPrice || product.price}
+                ${product.discountedPrice || product.price}
               </span>
               {product.discountedPrice && (
                 <span className="text-gray-400 line-through text-sm ml-2">
-                  ₹{product.price}
+                  ${product.price}
                 </span>
               )}
             </div>
@@ -184,13 +184,13 @@ const ProductCard: React.FC = () => {
             {cart.map((item, index) => (
               <li key={index} className="flex justify-between">
                 <span>{item.title}</span>
-                <span>₹{item.discountedPrice || item.price}</span>
+                <span>${item.discountedPrice || item.price}</span>
               </li>
             ))}
           </ul>
           <div className="mt-4 flex justify-between">
             <span>Total</span>
-            <span>₹{getTotalPrice()}</span>
+            <span>${getTotalPrice()}</span>
           </div>
         </div>
       )}

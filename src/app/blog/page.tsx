@@ -4,7 +4,6 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import Image from "next/image";
-import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function Blog() {
   const blogPosts = [
@@ -50,37 +49,16 @@ export default function Blog() {
 
   return (
     <div>
-       {/* Hero Section */}
-       <section
+      <Link href="/"></Link>
+      <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
         style={{
           backgroundImage: "url('/images/Rectangle 1.png')",
         }}
       >
-        <div className="w-fit">
-          <div className="flex flex-col justify-center items-center">
-            <div className="w-[60px] h-[60px] flex items-center justify-center">
-              <Image
-                src="/images/logo.png"
-                alt="logo"
-                width={50}
-                height={100}
-              />
-            </div>
-            <div>
-              <h2 className="font-medium text-[48px] text-black">Blog</h2>
-            </div>
-          </div>
-          <div className="flex items-center justify-center gap-1">
-            <Link href="/" className="font-semibold text-[16px] text-black">
-              Home
-            </Link>
-            <Icon
-              icon="material-symbols:keyboard-arrow-right"
-              className="w-5 h-5 font-bold"
-            />
-            <p className="font-light text-[16px] text-black">Blog</p>
-          </div>
+        <div className="bg-opacity-70 px-4 py-2 rounded-md">
+          <h1 className="text-4xl font-bold">Blog</h1>
+          <p className="text-sm mt-2 text-gray-600">Home &gt; Blog</p>
         </div>
       </section>
 

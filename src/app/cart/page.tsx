@@ -22,7 +22,12 @@ export default function Cart() {
         <div className="w-fit">
           <div className="flex flex-col justify-center items-center">
             <div className="w-[60px] h-[60px] flex items-center justify-center">
-              <Image src="/images/logo.png" alt="logo" width={50} height={100} />
+              <Image
+                src="/images/logo.png"
+                alt="logo"
+                width={50}
+                height={100}
+              />
             </div>
             <div>
               <h2 className="font-medium text-[48px] text-black">Cart</h2>
@@ -32,7 +37,10 @@ export default function Cart() {
             <Link href="/" className="font-semibold text-[16px] text-black">
               Home
             </Link>
-            <Icon icon="material-symbols:keyboard-arrow-right" className="w-5 h-5 font-bold" />
+            <Icon
+              icon="material-symbols:keyboard-arrow-right"
+              className="w-5 h-5 font-bold"
+            />
             <p className="font-light text-[16px] text-black">Cart</p>
           </div>
         </div>
@@ -96,6 +104,7 @@ export default function Cart() {
           </div>
         </div>
       </section>
+
       <Field/>
 {/* Icons Section */}
       <div className="bg-[#FFF3E3] p-10 flex flex-wrap gap-6 justify-center">

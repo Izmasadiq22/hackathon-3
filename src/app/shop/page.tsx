@@ -9,8 +9,8 @@ import { urlFor } from "@/sanity/lib/image";
 import ShopLine from "../components/Shopline";
 
 const sanity = createClient({
-  projectId: "j1efm4vy", 
-  dataset: "production", 
+  projectId: "j1efm4vy",
+  dataset: "production",
   useCdn: true,
   apiVersion: "2023-01-01",
 });
@@ -127,84 +127,75 @@ const ProductCard: React.FC = () => {
             <p className="font-light text-[16px] text-black">shop</p>
           </div>
         </div>
-        
       </section>
 
-
-<div>
-      <ShopLine/></div>
+      <div>
+        <ShopLine />
+      </div>
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.slice(0, visibleProducts).map((product) => (
           <div
             key={product._id}
             className="relative bg-white shadow-md rounded-md overflow-hidden transform hover:scale-105 transition-all duration-300"
           >
-              <Link
-                     href ={`/product/${product.slug.current}`}>
-                     {product.imageUrl && (
-                       <Image
-                         src={urlFor(product.imageUrl).url()}
-                         alt={product.title}
-                         width={400}
-                         height={300}
-                         className="w-full h-64 object-cover"
-                       />
-                       )}
-  
-         
-                     {/* Product Details */}
-                    
-                       <h3 className="text-lg font-semibold">{product.title}</h3>
-                       <p className="text-sm text-gray-500">{product.tags}</p>
-                       </Link>
-
-
-
-              {/* Description with truncation */}
-              <div className="text-sm text-gray-600 mt-2">
-                {expandedDescription[product._id] ? (
-                  product.description // Show full description
-                ) : (
-                  <>{product.description?.slice(0, 150)}...</> // Show first 150 characters
-                )}
-              </div>
-
-              {/* Toggle Read More */}
-              <button
-                onClick={() => toggleDescription(product._id)}
-                className="text-[#B88E2F] text-sm mt-2"
-              >
-                {expandedDescription[product._id] ? "Read Less" : "Read More"}
-              </button>
-
-              <div className="mt-2">
-                <span className="text-[#B88E2F] font-bold text-lg">
-                  ${product.discountedPrice || product.price}
-                </span>
-                {product.discountedPrice && (
-                  <span className="text-gray-400 line-through text-sm ml-2">
-                    ${product.price}
-                  </span>
-                )}
-              </div>
-              {product.discountPercentage && (
-                <p className="text-green-600 text-sm font-medium mt-1">
-                  {product.discountPercentage}% OFF
-                </p>
-                
-                
+            <Link href={`/product/${product.slug.current}`}>
+              {product.imageUrl && (
+                <Image
+                  src={urlFor(product.imageUrl).url()}
+                  alt={product.title}
+                  width={400}
+                  height={300}
+                  className="w-full h-64 object-cover"
+                />
               )}
-              
 
-              {/* Add to Cart Button */}
-              <button
-                onClick={() => addToCart(product)} // Calls the addToCart function
-                className="mt-4 bg-[#B88E2F] text-white py-2 px-4 rounded hover:bg-[#9A703A] transition"
-              >
-                Add to Cart
-              </button>
+              {/* Product Details */}
+
+              <h3 className="text-lg font-semibold">{product.title}</h3>
+              <p className="text-sm text-gray-500">{product.tags}</p>
+            </Link>
+
+            {/* Description with truncation */}
+            <div className="text-sm text-gray-600 mt-2">
+              {expandedDescription[product._id] ? (
+                product.description // Show full description
+              ) : (
+                <>{product.description?.slice(0, 150)}...</> // Show first 150 characters
+              )}
             </div>
-        
+
+            {/* Toggle Read More */}
+            <button
+              onClick={() => toggleDescription(product._id)}
+              className="text-[#B88E2F] text-sm mt-2"
+            >
+              {expandedDescription[product._id] ? "Read Less" : "Read More"}
+            </button>
+
+            <div className="mt-2">
+              <span className="text-[#B88E2F] font-bold text-lg">
+                ${product.discountedPrice || product.price}
+              </span>
+              {product.discountedPrice && (
+                <span className="text-gray-400 line-through text-sm ml-2">
+                  ${product.price}
+                </span>
+              )}
+            </div>
+            {product.discountPercentage && (
+              <p className="text-green-600 text-sm font-medium mt-1">
+                {product.discountPercentage}% OFF
+              </p>
+            )}
+
+            {/* Add to Cart Button */}
+            <button
+              onClick={() => addToCart(product)} // Calls the addToCart function
+              className="mt-4 bg-[#B88E2F] text-white py-2 px-4 rounded hover:bg-[#9A703A] transition"
+            >
+              Add to Cart
+            </button>
+          </div>
         ))}
       </div>
 
@@ -232,7 +223,7 @@ const ProductCard: React.FC = () => {
             {cart.map((item, index) => (
               <li key={index} className="flex justify-between">
                 <span>{item.title}</span>
-                <span>₹{item.discountedPrice || item.price}</span>
+                <span>${item.discountedPrice || item.price}</span>
               </li>
             ))}
           </ul>
