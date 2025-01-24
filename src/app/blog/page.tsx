@@ -1,8 +1,4 @@
 import Link from "next/link";
-import { HiOutlineTrophy } from "react-icons/hi2";
-import { IoShieldCheckmarkOutline } from "react-icons/io5";
-import { LiaShippingFastSolid } from "react-icons/lia";
-import { MdOutlineSupportAgent } from "react-icons/md";
 import Image from "next/image";
 import Feature from "../components/Feature";
 import { Icon } from "@iconify/react/dist/iconify.js";
