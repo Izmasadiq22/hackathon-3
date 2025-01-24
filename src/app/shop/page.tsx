@@ -7,6 +7,7 @@ import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image"; // Assuming this function is working properly
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ShopLine from "../components/Shopline";
+import Feature from "../components/Feature";
 
 const sanity = createClient({
   projectId: "j1efm4vy", // Replace with your project ID
@@ -96,35 +97,25 @@ const ProductCard: React.FC = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="bg-gray-50 py-12">
-      <section
+    <div>
+           {/* Hero Section */}
+           <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
         style={{ backgroundImage: "url('/images/Rectangle 1.png')" }}
       >
-        <div className="w-fit">
-          <div className="flex flex-col justify-center items-center">
-            <div className="w-[60px] h-[60px] flex items-center justify-center">
-              <Image
-                src="/images/logo.png"
-                alt="logo"
-                width={50}
-                height={100}
-              />
-            </div>
-            <h2 className="font-medium text-[48px] text-black">Shop</h2>
-          </div>
-          <div className="flex items-center justify-center gap-1">
+        <div className="flex flex-col items-center">
+          <Image src="/images/logo.png" alt="logo" width={50} height={50} />
+          <h2 className="font-medium text-[48px] text-black">Shop</h2>
+          <div className="flex items-center gap-1">
             <Link href="/" className="font-semibold text-[16px] text-black">
               Home
             </Link>
-            <Icon
-              icon="material-symbols:keyboard-arrow-right"
-              className="w-5 h-5 font-bold"
-            />
+            <Icon icon="material-symbols:keyboard-arrow-right" className="w-5 h-5" />
             <p className="font-light text-[16px] text-black">Shop</p>
           </div>
         </div>
       </section>
+
 
       <div>
         <ShopLine />
@@ -203,7 +194,7 @@ const ProductCard: React.FC = () => {
         <div className="flex justify-center mt-8">
           <button
             onClick={handleShowMore}
-            className="border border-[#B88E2F] text-[#B88E2F] px-6 py-2 rounded hover:bg-[#B88E2F] hover:text-white transition"
+            className=" mb-6 border border-[#B88E2F] text-[#B88E2F] px-6 py-2 rounded hover:bg-[#B88E2F] hover:text-white transition"
           >
             See More
           </button>
@@ -222,16 +213,17 @@ const ProductCard: React.FC = () => {
             {cart.map((item, index) => (
               <li key={index} className="flex justify-between">
                 <span>{item.title}</span>
-                <span>₹{item.discountedPrice || item.price}</span>
+                <span>${item.discountedPrice || item.price}</span>
               </li>
             ))}
           </ul>
           <div className="mt-4 flex justify-between">
             <span>Total</span>
-            <span>₹{getTotalPrice()}</span>
+            <span>${getTotalPrice()}</span>
           </div>
         </div>
       )}
+      <Feature/>
     </div>
   );
 };

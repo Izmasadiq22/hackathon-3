@@ -1,11 +1,12 @@
 import Link from "next/link";
-import Image from "next/image";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { HiOutlineTrophy } from "react-icons/hi2";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import Field from "../components/Field";
+import Image from "next/image";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import Feature from "../components/Feature";
 export default function Contact() {
   return (
     <main className="bg-white">
@@ -13,36 +14,24 @@ export default function Contact() {
       {/* Hero Section */}
       <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
-        style={{
-          backgroundImage: "url('/images/Rectangle 1.png')",
-        }}
+        style={{ backgroundImage: "url('/images/Rectangle 1.png')" }}
       >
-        <div className="w-fit">
-          <div className="flex flex-col justify-center items-center">
-            <div className="w-[60px] h-[60px] flex items-center justify-center">
-              <Image
-                src="/images/logo.png"
-                alt="logo"
-                width={50}
-                height={100}
-              />
-            </div>
-            <div>
-              <h2 className="font-medium text-[48px] text-black">Contact</h2>
-            </div>
-          </div>
-          <div className="flex items-center justify-center gap-1">
+        <div className="flex flex-col items-center">
+          <Image src="/images/logo.png" alt="logo" width={50} height={50} />
+          <h2 className="font-medium text-[48px] text-black">Contact</h2>
+          <div className="flex items-center gap-1">
             <Link href="/" className="font-semibold text-[16px] text-black">
               Home
             </Link>
             <Icon
               icon="material-symbols:keyboard-arrow-right"
-              className="w-5 h-5 font-bold"
+              className="w-5 h-5"
             />
-            <p className="font-light text-[16px] text-black">contact</p>
+            <p className="font-light text-[16px] text-black">Contact</p>
           </div>
         </div>
       </section>
+
       {/* Contact Form and Info Section */}
       <section className="container mx-auto py-16 px-4 md:px-0">
         <h2 className="text-center text-2xl font-bold mb-4">
@@ -134,42 +123,8 @@ export default function Contact() {
           </div>
         </div>
       </section>
-
-      <Field/>
-      {/* Icons Section */}
-      <div className="bg-[#FFF3E3] p-10 flex flex-wrap gap-6 justify-center">
-        <div className="flex flex-col items-center text-center w-60">
-          <HiOutlineTrophy className="h-14 w-14 text-black mb-3" />
-          <span className="font-sans font-bold text-black text-lg">
-            High Quality
-          </span>
-          <span className="text-gray-400 text-sm">Delivery on all orders</span>
-        </div>
-
-        <div className="flex flex-col items-center text-center w-60">
-          <IoShieldCheckmarkOutline className="h-14 w-14 text-black mb-3" />
-          <span className="font-sans font-bold text-black text-lg">
-            Warranty Protection
-          </span>
-          <span className="text-gray-400 text-sm">Delivery on all orders</span>
-        </div>
-
-        <div className="flex flex-col items-center text-center w-60">
-          <LiaShippingFastSolid className="h-14 w-14 text-black mb-3" />
-          <span className="font-sans font-bold text-black text-lg">
-            Free Shipping
-          </span>
-          <span className="text-gray-400 text-sm">Delivery on all orders</span>
-        </div>
-
-        <div className="flex flex-col items-center text-center w-60">
-          <MdOutlineSupportAgent className="h-14 w-14 text-black mb-3" />
-          <span className="font-sans font-bold text-black text-lg">
-            24/7 Support
-          </span>
-          <span className="text-gray-400 text-sm">Delivery on all orders</span>
-        </div>
-      </div>
+      <Field />
+      <Feature />
     </main>
   );
 }

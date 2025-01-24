@@ -4,7 +4,8 @@ import Browse from "./components/Browse";
 import Funiro from "./components/Funiro";
 import { Hero } from "./components/Hero";
 import Product from "./components/Product";
-import RoomInspiration from "./components/RoomInspiration";
+import { RoomInspiration } from "./components/RoomInspiration";
+
 
 
 
