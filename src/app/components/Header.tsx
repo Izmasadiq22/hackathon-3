@@ -26,12 +26,17 @@ export function Header() {
 
       {/* Icons */}
       <div className="flex items-center gap-6 text-gray-700">
+        <Link href = "/userAccount">
         <MdPersonOutline size={20} className="cursor-pointer hover:text-[#B88E2F]" />
-        <Link href="/productcomparison">
+        </Link>
+
+        <Link href="/search">
         <IoSearch size={20} className="cursor-pointer hover:text-[#B88E2F]" />
         </Link>
+        <Link href= "/wishlist">
         <FaRegHeart size={20} className="cursor-pointer hover:text-[#B88E2F]" />
-        <Link href="cart">
+        </Link>
+        <Link href="/cart">
         <BsCart3 size={20} className="cursor-pointer hover:text-[#B88E2F]" />
         </Link>
       </div>

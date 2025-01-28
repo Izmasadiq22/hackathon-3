@@ -24,16 +24,13 @@ interface Product {
   discountPercentage?: number;
   discountedPrice?: number;
   isNew: boolean;
-  description: string;
 }
 
 const ProductCard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [cart, setCart] = useState<Product[]>([]);
   const [visibleProducts, setVisibleProducts] = useState(8);
-  const [expandedDescription, setExpandedDescription] = useState<Record<string, boolean>>({});
 
   // Fetch products from Sanity
   useEffect(() => {
@@ -48,8 +45,7 @@ const ProductCard: React.FC = () => {
           slug,
           discountPercentage,
           discountedPrice,
-          isNew,
-          description
+          isNew
         }`;
         const data = await sanity.fetch<Product[]>(query);
         setProducts(data);
@@ -62,20 +58,6 @@ const ProductCard: React.FC = () => {
     };
     fetchProducts();
   }, []);
-
-  // Add product to cart
-  const addToCart = (product: Product) => {
-    setCart((prevCart) => [...prevCart, product]);
-  };
-
-  // Calculate total cart price
-  const getTotalPrice = (): number =>
-    cart.reduce((total, product) => total + (product.discountedPrice || product.price), 0);
-
-  // Toggle description expansion
-  const toggleDescription = (id: string) => {
-    setExpandedDescription((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   // Handle "See More" functionality
   const handleShowMore = () => setVisibleProducts((prev) => prev + 8);
@@ -110,19 +92,6 @@ const ProductCard: React.FC = () => {
               <h3 className="text-lg font-semibold">{product.title}</h3>
               <p className="text-sm text-gray-500">{product.tags}</p>
 
-              {/* Description */}
-              <p className="text-sm text-gray-600 mt-2">
-                {expandedDescription[product._id]
-                  ? product.description
-                  : `${product.description?.slice(0, 150)}...`}
-              </p>
-              <button
-                onClick={() => toggleDescription(product._id)}
-                className="text-[#B88E2F] text-sm mt-2"
-              >
-                {expandedDescription[product._id] ? "Read Less" : "Read More"}
-              </button>
-
               {/* Price */}
               <div className="mt-2">
                 <span className="text-[#B88E2F] font-bold text-lg">
@@ -139,14 +108,6 @@ const ProductCard: React.FC = () => {
                   {product.discountPercentage}% OFF
                 </p>
               )}
-
-              {/* Add to Cart Button */}
-              <button
-                onClick={() => addToCart(product)}
-                className="mt-4 bg-[#B88E2F] text-white py-2 px-4 rounded hover:bg-[#9A703A] transition"
-              >
-                Add to Cart
-              </button>
             </div>
           </div>
         ))}
@@ -161,29 +122,6 @@ const ProductCard: React.FC = () => {
           >
             See More
           </button>
-        </div>
-      )}
-
-      {/* Cart Summary */}
-      <div className="fixed bottom-4 right-4 bg-[#B88E2F] text-white py-2 px-4 rounded-full cursor-pointer hover:bg-[#9A703A]">
-        <span>Cart: {cart.length} items</span>
-      </div>
-
-      {cart.length > 0 && (
-        <div className="fixed bottom-20 right-4 bg-white p-4 shadow-lg rounded-lg w-72">
-          <h4 className="font-bold text-lg">Your Cart</h4>
-          <ul className="my-2">
-            {cart.map((item, index) => (
-              <li key={index} className="flex justify-between">
-                <span>{item.title}</span>
-                <span>${item.discountedPrice || item.price}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 flex justify-between">
-            <span>Total</span>
-            <span>${getTotalPrice()}</span>
-          </div>
         </div>
       )}
     </div>

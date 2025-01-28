@@ -45,15 +45,19 @@ export const product = defineType({
             type: "boolean",
             title: "New Badge",
         },
-         {
+        {
             name: "slug",
             type: "slug",
-           title: "Slug",
-        //  validation: (rule) => rule.required(),
-           options: {
+            title: "Slug",
+            options: {
                 source: "title",
-                // maxLength: 96,
             },
-         },
+        },
+        {
+            name: "inventory", // New inventory field
+            type: "number",
+            title: "Inventory",
+            validation: (rule) => rule.required().min(0), // Ensure inventory is non-negative
+        },
     ]
 });

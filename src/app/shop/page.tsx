@@ -1,13 +1,14 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { createClient } from "@sanity/client";
 import Image from "next/image";
 import Link from "next/link";
-import { urlFor } from "@/sanity/lib/image"; // Assuming this function is working properly
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { urlFor } from "@/sanity/lib/image"; // Assuming this function works properly
+import { addToCart } from "../actions/actions";
+import Swal from "sweetalert2";
 import ShopLine from "../components/Shopline";
-import Feature from "../components/Feature";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { FaRegHeart } from "react-icons/fa";
 
 const sanity = createClient({
   projectId: "j1efm4vy", // Replace with your project ID
@@ -21,20 +22,22 @@ export interface Product {
   title: string;
   price: number;
   imageUrl: string;
-  tags: string;
-  slug: { current: string }; // Ensure the slug has the "current" field
+  tags: string | string[];
+  slug: { current: string };
   discountPercentage: number;
   discountedPrice: number;
   isNew: boolean;
   description: string;
+  inventory: number;
 }
 
 const ProductCard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [cart, setCart] = useState<Product[]>([]);
   const [visibleProducts, setVisibleProducts] = useState<number>(8);
+  const [wishlist, setWishlist] = useState<Product[]>([]); // Wishlist state
 
   const fetchProducts = async () => {
     try {
@@ -48,13 +51,18 @@ const ProductCard: React.FC = () => {
         slug,
         discountPercentage,
         discountedPrice,
-        isNew,
-        description
+        isNew
       }`;
 
       const data = await sanity.fetch(query);
-      console.log("Fetched products:", data); // Debugging the fetched data
-      setProducts(data);
+
+      const transformedData = data.map((product: any) => ({
+        ...product,
+        imageUrl: product.imageUrl || "",
+      }));
+
+      setProducts(transformedData);
+      setFilteredProducts(transformedData); // Initialize filtered products
     } catch (error) {
       setError("Error fetching products.");
       console.error("Error fetching products:", error);
@@ -63,34 +71,91 @@ const ProductCard: React.FC = () => {
     }
   };
 
-  const addToCart = (product: Product) => {
-    setCart((prevCart) => [...prevCart, product]);
-  };
-
-  const getTotalPrice = () => {
-    return cart.reduce(
-      (total, product) => total + (product.discountedPrice || product.price),
-      0
+  // Handle search
+  const handleSearch = (query: string) => {
+    const filtered = products.filter((product) =>
+      product.title.toLowerCase().includes(query.toLowerCase())
     );
+    setFilteredProducts(filtered);
   };
 
+  // Handle category change
+  const handleCategoryChange = (category: string) => {
+    if (category === "All") {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter((product) => {
+        if (Array.isArray(product.tags)) {
+          return product.tags.some(
+            (tag) => tag.toLowerCase() === category.toLowerCase()
+          );
+        } else if (typeof product.tags === "string") {
+          return product.tags.toLowerCase() === category.toLowerCase();
+        }
+        return false;
+      });
+      setFilteredProducts(filtered);
+    }
+  };
+
+  // Handle price change
+  const handlePriceChange = (minPrice: number, maxPrice: number) => {
+    const filtered = products.filter(
+      (product) => product.price >= minPrice && product.price <= maxPrice
+    );
+    setFilteredProducts(filtered);
+  };
+
+  // Handle 'See More' button
   const handleShowMore = () => {
     setVisibleProducts((prev) => prev + 8);
   };
 
-  const [expandedDescription, setExpandedDescription] = useState<{
-    [key: string]: boolean;
-  }>({});
+  // Handle Add to Cart
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    Swal.fire({
+      position: "bottom-right",
+      icon: "success",
+      title: `${product.title} added to cart`,
+      showConfirmButton: false,
+      timer: 1000,
+    });
+    addToCart(product);
+  };
 
-  const toggleDescription = (id: string) => {
-    setExpandedDescription((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  // Handle Add to Wishlist
+  const handleAddToWishlist = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    setWishlist((prevWishlist) => {
+      if (prevWishlist.some((item) => item._id === product._id)) {
+        Swal.fire({
+          position: "bottom-right",
+          icon: "info",
+          title: `${product.title} is already in your wishlist`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return prevWishlist; // Prevent duplicates
+      }
+      const updatedWishlist = [...prevWishlist, product];
+      localStorage.setItem("wishlist", JSON.stringify(updatedWishlist)); // Save wishlist to localStorage
+      Swal.fire({
+        position: "bottom-right",
+        icon: "success",
+        title: `${product.title} added to wishlist`,
+        showConfirmButton: false,
+        timer: 1000,
+      });
+      return updatedWishlist;
+    });
   };
 
   useEffect(() => {
     fetchProducts();
+    // Load wishlist from localStorage
+    const savedWishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    setWishlist(savedWishlist);
   }, []);
 
   if (loading) return <div>Loading products...</div>;
@@ -98,8 +163,8 @@ const ProductCard: React.FC = () => {
 
   return (
     <div>
-           {/* Hero Section */}
-           <section
+      {/* Hero Section */}
+      <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
         style={{ backgroundImage: "url('/images/Rectangle 1.png')" }}
       >
@@ -110,25 +175,27 @@ const ProductCard: React.FC = () => {
             <Link href="/" className="font-semibold text-[16px] text-black">
               Home
             </Link>
-            <Icon icon="material-symbols:keyboard-arrow-right" className="w-5 h-5" />
+            <Icon
+              icon="material-symbols:keyboard-arrow-right"
+              className="w-5 h-5"
+            />
             <p className="font-light text-[16px] text-black">Shop</p>
           </div>
         </div>
       </section>
 
+      <ShopLine
+        onSearch={handleSearch}
+        onCategoryChange={handleCategoryChange}
+        onPriceChange={handlePriceChange}
+      />
 
-      <div>
-        <ShopLine />
-      </div>
-
-      <h2 className="text-3xl font-bold text-center mb-8 mt-4">Shop Now</h2>
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.slice(0, visibleProducts).map((product) => (
+        {filteredProducts.slice(0, visibleProducts).map((product) => (
           <div
             key={product._id}
-            className="relative bg-white shadow-md rounded-md overflow-hidden transform hover:scale-105 transition-all duration-300"
+            className="relative mt-6 bg-white shadow-md rounded-md overflow-hidden transform hover:scale-105 transition-all duration-300"
           >
-            {/* Product Image */}
             <Link href={`/product/${product.slug.current}`}>
               {product.imageUrl && (
                 <Image
@@ -141,89 +208,57 @@ const ProductCard: React.FC = () => {
               )}
             </Link>
 
-            {/* Product Details */}
-            <h3 className="text-lg font-semibold">{product.title}</h3>
-            <p className="text-sm text-gray-500">{product.tags}</p>
+            <h3 className="text-lg font-semibold ml-2">{product.title}</h3>
+            <p className="text-sm text-gray-500 ml-2">
+              {Array.isArray(product.tags)
+                ? product.tags.join(", ")
+                : product.tags}
+            </p>
 
-            {/* Description with truncation */}
-            <div className="text-sm text-gray-600 mt-2">
-              {expandedDescription[product._id] ? (
-                product.description // Show full description
-              ) : (
-                <>{product.description?.slice(0, 150)}...</> // Show first 150 characters
-              )}
-            </div>
-
-            {/* Toggle Read More */}
             <button
-              onClick={() => toggleDescription(product._id)}
-              className="text-[#B88E2F] text-sm mt-2"
+              className="bg-amber-700 text-white font-semibold mt-4 ml-40 py-2 px-4 rounded-lg shadow-md hover:shadow-lg hover:scale-110 transition-transform duration-300 ease-in-out"
+              onClick={(e) => handleAddToCart(e, product)}
             >
-              {expandedDescription[product._id] ? "Read Less" : "Read More"}
+              Add To Cart
+            </button>
+
+            <button
+              onClick={(e) => handleAddToWishlist(e, product)}
+              className="text-red-500 hover:text-red-700 transition duration-200 ml-4"
+              aria-label="add to wishlist"
+            >
+              <FaRegHeart size={20} />
             </button>
 
             <div className="mt-2">
-              <span className="text-[#B88E2F] font-bold text-lg">
-                ₹{product.discountedPrice || product.price}
+              <span className="text-[#B88E2F] font-bold text-lg ml-4">
+                ${product.discountedPrice || product.price}
               </span>
               {product.discountedPrice && (
                 <span className="text-gray-400 line-through text-sm ml-2">
-                  ₹{product.price}
+                  ${product.price}
                 </span>
               )}
             </div>
             {product.discountPercentage && (
-              <p className="text-green-600 text-sm font-medium mt-1">
+              <p className="text-green-600 text-sm font-medium mt-1 ml-4 mb-2">
                 {product.discountPercentage}% OFF
               </p>
             )}
-
-            {/* Add to Cart Button */}
-            <button
-              onClick={() => addToCart(product)} // Calls the addToCart function
-              className="mt-4 bg-[#B88E2F] text-white py-2 px-4 rounded hover:bg-[#9A703A] transition"
-            >
-              Add to Cart
-            </button>
           </div>
         ))}
       </div>
 
-      {/* Show More Button */}
-      {visibleProducts < products.length && (
+      {visibleProducts < filteredProducts.length && (
         <div className="flex justify-center mt-8">
           <button
             onClick={handleShowMore}
-            className=" mb-6 border border-[#B88E2F] text-[#B88E2F] px-6 py-2 rounded hover:bg-[#B88E2F] hover:text-white transition"
+            className="mb-6 border border-[#B88E2F] text-[#B88E2F] px-6 py-2 rounded hover:bg-[#B88E2F] hover:text-white transition"
           >
             See More
           </button>
         </div>
       )}
-
-      {/* Cart Details */}
-      <div className="fixed bottom-4 right-4 bg-[#B88E2F] text-white py-2 px-4 rounded-full cursor-pointer hover:bg-[#9A703A]">
-        <span>Cart: {cart.length} items</span>
-      </div>
-
-      {cart.length > 0 && (
-        <div className="fixed bottom-20 right-4 bg-white p-4 shadow-lg rounded-lg w-72">
-          <h4 className="font-bold text-lg">Your Cart</h4>
-          <ul className="my-2">
-            {cart.map((item, index) => (
-              <li key={index} className="flex justify-between">
-                <span>{item.title}</span>
-                <span>${item.discountedPrice || item.price}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 flex justify-between">
-            <span>Total</span>
-            <span>${getTotalPrice()}</span>
-          </div>
-        </div>
-      )}
-      <Feature/>
     </div>
   );
 };

@@ -1,16 +1,97 @@
+"use client";
 import Link from "next/link";
-import Field from "../components/Field";
+import React, { useEffect, useState } from "react";
 import Feature from "../components/Feature";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
+import Swal from "sweetalert2";
+import { Product } from "../types/products";
+import {
+  getCartItems,
+  removeFromCart,
+  updateCartQuantity,
+} from "../actions/actions";
+import { useRouter } from "next/navigation";
 
 export default function Cart() {
+  const [cartItems, setCartItems] = useState<Product[]>([]);
+
+  useEffect(() => {
+    setCartItems(getCartItems());
+  }, []);
+
+  const handleRemove = (id: string) => {
+    Swal.fire({
+      title: "Are You Sure?",
+      text: "You will not be able to recover this item",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#308566",
+      cancelButtonColor: "#ed3333",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeFromCart(id);
+        setCartItems(getCartItems());
+        Swal.fire("Removed", "Item has been removed", "success");
+      }
+    });
+  };
+
+  const handleQuantityChange = (id: string, quantity: number) => {
+    updateCartQuantity(id, quantity);
+    setCartItems(getCartItems());
+  };
+
+  const handleIncrement = (id: string) => {
+    const product = cartItems.find((item) => item._id === id);
+    if (product) handleQuantityChange(id, product.inventory + 1);
+  };
+
+  const handleDecrement = (id: string) => {
+    const product = cartItems.find((item) => item._id === id);
+    if (product && product.inventory > 1)
+      handleQuantityChange(id, product.inventory - 1);
+  };
+
+  const calculatedTotal = () => {
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.inventory,
+      0
+    );
+  };
+
+  const router = useRouter();
+
+  const handleProceed = () => {
+    Swal.fire({
+      title: "Proceed to Checkout?",
+      text: "Please review your cart before checkout",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#308566",
+      cancelButtonColor: "#ed3333",
+      confirmButtonText: "Yes, Proceed!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Success",
+          "Your Order has been successfully processed",
+          "success"
+        );
+
+        router.push("/checkout");
+
+        setCartItems([]);
+      }
+    });
+  };
+
   return (
     <div>
       <Link href="/cart"></Link>
 
-          {/* Hero Section */}
-          <section
+      {/* Hero Section */}
+      <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
         style={{ backgroundImage: "url('/images/Rectangle 1.png')" }}
       >
@@ -21,12 +102,14 @@ export default function Cart() {
             <Link href="/" className="font-semibold text-[16px] text-black">
               Home
             </Link>
-            <Icon icon="material-symbols:keyboard-arrow-right" className="w-5 h-5" />
+            <Icon
+              icon="material-symbols:keyboard-arrow-right"
+              className="w-5 h-5"
+            />
             <p className="font-light text-[16px] text-black">Cart</p>
           </div>
         </div>
       </section>
-
 
       {/* Cart Table */}
       <section className="p-6 lg:p-10">
@@ -40,29 +123,58 @@ export default function Cart() {
                   <th className="p-3">Price</th>
                   <th className="p-3">Quantity</th>
                   <th className="p-3">Subtotal</th>
+                  <th className="p-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b">
-                  <td className="p-3 flex items-center space-x-4">
-                    <img
-                      src="/images/Group 160.png"
-                      alt="Asgaard sofa"
-                      className="w-16 h-16 object-cover"
-                    />
-                    <span>Asgaard sofa</span>
-                  </td>
-                  <td className="p-3">Rs. 250,000.00</td>
-                  <td className="p-3">
-                    <input
-                      type="number"
-                      min="1"
-                      value="1"
-                      className="w-16 border p-0 text-center"
-                    />
-                  </td>
-                  <td className="p-3">Rs. 250,000.00</td>
-                </tr>
+                {cartItems.map((item) => (
+                  <tr key={item._id} className="border-b">
+                    <td className="p-3 flex items-center space-x-4">
+                      <img
+                        src={item.imageUrl || "/images/default-product.png"}
+                        alt={item.title}
+                        className="w-16 h-16 object-cover"
+                      />
+                      <span>{item.title}</span>
+                    </td>
+                    <td className="p-3"> ${item.price}</td>
+                    <td className="p-3 flex items-center space-x-2">
+                      <button
+                        onClick={() => handleDecrement(item._id)}
+                        className="px-2 py-1 bg-gray-200 hover:bg-gray-300"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        min="1"
+                        value={item.inventory}
+                        onChange={(e) =>
+                          handleQuantityChange(
+                            item._id,
+                            parseInt(e.target.value) || 1
+                          )
+                        }
+                        className="w-16 border text-center"
+                      />
+                      <button
+                        onClick={() => handleIncrement(item._id)}
+                        className="px-2 py-1 bg-gray-200 hover:bg-gray-300"
+                      >
+                        +
+                      </button>
+                    </td>
+                    <td className="p-3"> ${item.price * item.inventory}</td>
+                    <td className="p-3">
+                      <button
+                        onClick={() => handleRemove(item._id)}
+                        className="px-3 py-1 bg-[#B88E2F] text-white hover:bg-red-600"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -72,22 +184,25 @@ export default function Cart() {
             <h2 className="text-lg font-semibold mb-4">Cart Totals</h2>
             <div className="flex justify-between mb-2">
               <span>Subtotal:</span>
-              <span>Rs. 250,000.00</span>
+              <span> ${calculatedTotal()}</span>
             </div>
             <div className="flex justify-between font-bold mb-4">
               <span>Total:</span>
-              <span>Rs. 250,000.00</span>
+              <span> ${calculatedTotal()}</span>
             </div>
-            <Link href="/checkout">
-              <button className="w-full bg-orange-500 text-white py-2 font-bold hover:bg-orange-600">
-                Check Out
-              </button>
-            </Link>
+            <button
+              onClick={handleProceed}
+              className=" w-full bg-[#B88E2F] text-white py-3 border border-black font-bold rounded-xl hover:bg-[#ecb431]"
+            >
+              Check Out
+            </button>
           </div>
         </div>
       </section>
-      <Field/>
-<Feature/>
+
+    
+      <Feature />
+      
     </div>
   );
 }
