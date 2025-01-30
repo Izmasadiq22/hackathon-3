@@ -5,6 +5,9 @@ import { createClient } from "@sanity/client";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
+import Swal from "sweetalert2";
+import { addToCart } from "../actions/actions";
+import { Product } from "../types/products";
 
 const sanity = createClient({
   projectId: "j1efm4vy",
@@ -12,19 +15,6 @@ const sanity = createClient({
   useCdn: true,
   apiVersion: "2023-01-01",
 });
-
-// Product Interface
-interface Product {
-  _id: string;
-  title: string;
-  price: number;
-  imageUrl: string;
-  tags: string;
-  slug: { current: string };
-  discountPercentage?: number;
-  discountedPrice?: number;
-  isNew: boolean;
-}
 
 const ProductCard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -62,6 +52,19 @@ const ProductCard: React.FC = () => {
   // Handle "See More" functionality
   const handleShowMore = () => setVisibleProducts((prev) => prev + 8);
 
+  // Handle Add to Cart
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    Swal.fire({
+      position: "bottom-right",
+      icon: "success",
+      title: `${product.title} added to cart`,
+      showConfirmButton: false,
+      timer: 1000,
+    });
+    addToCart(product);
+  };
+
   if (loading) return <div>Loading products...</div>;
   if (error) return <div>{error}</div>;
 
@@ -86,6 +89,13 @@ const ProductCard: React.FC = () => {
                 />
               )}
             </Link>
+
+            <button
+              className="bg-amber-700 text-white font-semibold mt-4 ml-40 py-2 px-4 rounded-lg shadow-md hover:shadow-lg hover:scale-110 transition-transform duration-300 ease-in-out"
+              onClick={(e) => handleAddToCart(e, product)}
+            >
+              Add To Cart
+            </button>
 
             {/* Product Details */}
             <div className="p-4">

@@ -1,9 +1,26 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
-import Feature from "../components/Feature";
+import { useState, useEffect } from "react";
+import { createClient } from "@sanity/client";
+import { urlFor } from "@/sanity/lib/image";
+import { Product } from "../types/products";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import Feature from "../components/Feature";
+
+const sanity = createClient({
+  projectId: "j1efm4vy",
+  dataset: "production",
+  useCdn: true,
+  apiVersion: "2023-01-01",
+});
 
 export default function Blog() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 4;
+
+  // Blog posts data
   const blogPosts = [
     {
       id: 1,
@@ -12,8 +29,7 @@ export default function Blog() {
       author: "Admin",
       date: "16 Oct 2022",
       category: "Wood",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elementum tempor lacus, in blandit magna ultricies sit amet. Mauris efficitur risus eu velit pharetra vehicula.",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     },
     {
       id: 2,
@@ -22,8 +38,7 @@ export default function Blog() {
       author: "Admin",
       date: "14 Oct 2022",
       category: "Handmade",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elementum tempor lacus, in blandit magna ultricies sit amet. Mauris efficitur risus eu velit pharetra vehicula.",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     },
     {
       id: 3,
@@ -32,24 +47,52 @@ export default function Blog() {
       author: "Admin",
       date: "10 Oct 2022",
       category: "Design",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elementum tempor lacus, in blandit magna ultricies sit amet. Mauris efficitur risus eu velit pharetra vehicula.",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     },
   ];
 
-  const categories = [
-    { name: "Crafts", count: 3 },
-    { name: "Design", count: 2 },
-    { name: "Handmade", count: 4 },
-    { name: "Interior", count: 1 },
-    { name: "Wood", count: 2 },
-  ];
+  // Fetch products from Sanity
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const query = `*[_type == "product"]{
+          _id,
+          title,
+          price,
+          "imageUrl": productImage.asset->url,
+          slug
+        }`;
+        const data = await sanity.fetch<Product[]>(query);
+        setProducts(data);
+      } catch (err) {
+        console.error("Failed to fetch products", err);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Calculate the range of products to be displayed
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  // Total number of pages
+  const totalPages = Math.ceil(products.length / productsPerPage);
+
+  // Handle page change
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div>
       <Link href="/"></Link>
-           {/* Hero Section */}
-           <section
+
+      {/* Hero Section */}
+      <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
         style={{ backgroundImage: "url('/images/Rectangle 1.png')" }}
       >
@@ -60,13 +103,16 @@ export default function Blog() {
             <Link href="/" className="font-semibold text-[16px] text-black">
               Home
             </Link>
-            <Icon icon="material-symbols:keyboard-arrow-right" className="w-5 h-5" />
+            <Icon
+              icon="material-symbols:keyboard-arrow-right"
+              className="w-5 h-5"
+            />
             <p className="font-light text-[16px] text-black">Blog</p>
           </div>
         </div>
       </section>
 
-
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto p-5 grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Blog Posts Section */}
         <div className="lg:col-span-3 space-y-8">
@@ -90,14 +136,6 @@ export default function Blog() {
               </a>
             </div>
           ))}
-
-          {/* Pagination */}
-          <div className="flex justify-center space-x-3">
-            <button className="border px-4 py-2">1</button>
-            <button className="border px-4 py-2">2</button>
-            <button className="border px-4 py-2">3</button>
-            <button className="border px-4 py-2">Next</button>
-          </div>
         </div>
 
         {/* Sidebar */}
@@ -110,17 +148,15 @@ export default function Blog() {
               className="w-full border rounded-lg p-2"
             />
           </div>
-
-          {/* Categories */}
+          {/* Categories Section */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Categories</h3>
             <ul className="space-y-2">
-              {categories.map((cat, index) => (
-                <li key={index} className="flex justify-between text-gray-700">
-                  <span>{cat.name}</span>
-                  <span>({cat.count})</span>
-                </li>
-              ))}
+              <li>Crafts (3)</li>
+              <li>Design (2)</li>
+              <li>Handmade (4)</li>
+              <li>Interior (1)</li>
+              <li>Wood (2)</li>
             </ul>
           </div>
 
@@ -217,6 +253,53 @@ export default function Blog() {
           </div>
         </aside>
       </div>
+
+      {/* Products Section Above Feature */}
+      <section className="products-section">
+        <h3 className="text-2xl font-semibold mb-4 px-5">Products</h3>
+        {currentProducts.length > 0 && (
+          <div className="flex overflow-x-auto gap-6 pb-8 px-5">
+            {currentProducts.map((product) => (
+              <div
+                key={product._id}
+                className="w-full h-full object-cover bg-white shadow-md rounded-md overflow-hidden transform hover:scale-105 transition-all duration-300"
+              >
+                <Link href={`/product/${product.slug.current}`}>
+                  {product.imageUrl && (
+                    <Image
+                      src={urlFor(product.imageUrl).url()}
+                      alt={product.title}
+                      width={400}
+                      height={300}
+                      className="w-full h-64 object-cover"
+                    />
+                  )}
+                </Link>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold">{product.title}</h3>
+                  <p className="text-gray-700">${product.price}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Pagination for Products (Horizontal at Bottom) */}
+        <div className="flex justify-center space-x-3 mt-8 mb-8">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => handlePageChange(index + 1)}
+              className={`border px-4 py-2 ${
+                currentPage === index + 1 ? "bg-[#B88E2F] text-white" : ""
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <Feature />
     </div>
   );

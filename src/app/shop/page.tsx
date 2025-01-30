@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import ShopLine from "../components/Shopline";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { FaRegHeart } from "react-icons/fa";
+import { Product } from "../types/products";
 
 const sanity = createClient({
   projectId: "j1efm4vy", // Replace with your project ID
@@ -17,19 +18,19 @@ const sanity = createClient({
   apiVersion: "2023-01-01",
 });
 
-export interface Product {
-  _id: string;
-  title: string;
-  price: number;
-  imageUrl: string;
-  tags: string | string[];
-  slug: { current: string };
-  discountPercentage: number;
-  discountedPrice: number;
-  isNew: boolean;
-  description: string;
-  inventory: number;
-}
+// export interface Product {
+//   _id: string;
+//   title: string;
+//   price: number;
+//   imageUrl: string;
+//   tags: string | string[];
+//   slug: { current: string };
+//   discountPercentage: number;
+//   discountedPrice: number;
+//   isNew: boolean;
+//   description: string;
+//   inventory: number;
+// }
 
 const ProductCard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -208,6 +209,13 @@ const ProductCard: React.FC = () => {
               )}
             </Link>
 
+            <button
+              className="bg-amber-700 text-white font-semibold mt-4 ml-40 py-2 px-4 rounded-lg shadow-md hover:shadow-lg hover:scale-110 transition-transform duration-300 ease-in-out"
+              onClick={(e) => handleAddToCart(e, product)}
+            >
+              Add To Cart
+            </button>
+
             <h3 className="text-lg font-semibold ml-2">{product.title}</h3>
             <p className="text-sm text-gray-500 ml-2">
               {Array.isArray(product.tags)
@@ -216,15 +224,8 @@ const ProductCard: React.FC = () => {
             </p>
 
             <button
-              className="bg-amber-700 text-white font-semibold mt-4 ml-40 py-2 px-4 rounded-lg shadow-md hover:shadow-lg hover:scale-110 transition-transform duration-300 ease-in-out"
-              onClick={(e) => handleAddToCart(e, product)}
-            >
-              Add To Cart
-            </button>
-
-            <button
               onClick={(e) => handleAddToWishlist(e, product)}
-              className="text-red-500 hover:text-red-700 transition duration-200 ml-4"
+              className="text-red-500 hover:text-red-700 transition duration-200 absolute bottom-0 right-0 p-4"
               aria-label="add to wishlist"
             >
               <FaRegHeart size={20} />

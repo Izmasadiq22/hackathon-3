@@ -1,5 +1,4 @@
 
-
 import Browse from "./components/Browse";
 import Funiro from "./components/Funiro";
 import { Hero } from "./components/Hero";

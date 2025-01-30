@@ -1,14 +1,15 @@
+"use client";
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
 import { Product } from "@/app/types/products";
+import Swal from "sweetalert2";
+import { addToCart } from "@/app/actions/actions";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
-
-
 
 async function getProduct(slug: string): Promise<Product> {
   return client.fetch(
@@ -29,6 +30,19 @@ async function getProduct(slug: string): Promise<Product> {
   );
 }
 
+// Handle Add to Cart
+const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+  e.preventDefault();
+  Swal.fire({
+    position: "bottom-right",
+    icon: "success",
+    title: `${product.title} added to cart`,
+    showConfirmButton: false,
+    timer: 1000,
+  });
+  addToCart(product);
+};
+
 export default async function ProductCard({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = await getProduct(slug);
@@ -37,7 +51,9 @@ export default async function ProductCard({ params }: ProductPageProps) {
     return (
       <div>
         <h1>Product not found!</h1>
-        <p>Make sure the slug is correct and the product exists in the database.</p>
+        <p>
+          Make sure the slug is correct and the product exists in the database.
+        </p>
       </div>
     );
   }
@@ -46,27 +62,26 @@ export default async function ProductCard({ params }: ProductPageProps) {
     <div className="max-w-screen-2xl container mx-auto pb-8 px-4">
       <nav className="text-gray-700 text-xl flex items-center space-x-2">
         <span className="font-bold hover:underline cursor-pointer">Home</span>
-        <span className="font-bold">{'>'}</span>
+        <span className="font-bold">{">"}</span>
         <span className="hover:underline cursor-pointer">Shop</span>
-        <span className="font-bold">{'>'}</span>
+        <span className="font-bold">{">"}</span>
         <span>{product.title}</span>
       </nav>
 
       <div className="grid md:grid-cols-2 gap-8 mt-8">
         {/* Product Images */}
         <div>
-        {product.imageUrl ? (
-          <Image
-            src={urlFor(product.imageUrl).url()}
-            alt={product.title}
-            width={500}
-            height={400}
-            className="rounded-lg shadow-md"
-          />
-
-        ) : (
-          <p>Image not available</p>
-        )}
+          {product.imageUrl ? (
+            <Image
+              src={urlFor(product.imageUrl).url()}
+              alt={product.title}
+              width={500}
+              height={400}
+              className="rounded-lg shadow-md"
+            />
+          ) : (
+            <p>Image not available</p>
+          )}
         </div>
 
         {/* Product Details */}
@@ -95,12 +110,14 @@ export default async function ProductCard({ params }: ProductPageProps) {
             <h4 className="font-semibold">Color</h4>
             <div className="flex gap-2 mt-2">
               {/* Colors hardcoded for demo, adjust logic as needed */}
-              {["bg-purple-700", "bg-blue-500", "bg-green-400"].map((color, idx) => (
-                <div
-                  key={idx}
-                  className={`rounded-full h-5 w-5 ${color}`}
-                ></div>
-              ))}
+              {["bg-purple-700", "bg-blue-500", "bg-green-400"].map(
+                (color, idx) => (
+                  <div
+                    key={idx}
+                    className={`rounded-full h-5 w-5 ${color}`}
+                  ></div>
+                )
+              )}
             </div>
           </div>
 
@@ -110,8 +127,18 @@ export default async function ProductCard({ params }: ProductPageProps) {
               <span>1</span>
               <button>+</button>
             </div>
-            <button className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90">
+            <button
+              className="bg-amber-700 text-white font-semibold mt-4 ml-40 py-2 px-4 rounded-lg shadow-md hover:shadow-lg hover:scale-110 transition-transform duration-300 ease-in-out"
+              onClick={(e) => handleAddToCart(e, product)}
+            >
               Add To Cart
+            </button>
+
+            <button
+              className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-lg hover:bg-blue-700 transition duration-300 mt-4"
+              onClick={() => (window.location.href = "/productComparison")}
+            >
+              View Comparison
             </button>
           </div>
 
@@ -128,7 +155,7 @@ export default async function ProductCard({ params }: ProductPageProps) {
             </div>
             <div className="flex justify-between">
               <span>Tags:</span>
-              <span>{product.tags?.join(", ")}</span>
+              {/* <span>{product.tags?.join(", ")}</span> */}
             </div>
             <div className="flex justify-between items-center mt-4">
               <span>Share:</span>

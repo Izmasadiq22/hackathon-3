@@ -16,3 +16,5 @@ export interface Product {
   description: string;
   inventory: number;
 }
+
+
