@@ -1,12 +1,50 @@
+"use client"
+import { useState } from "react";
 import Link from "next/link";
 import Field from "../components/Field";
 import Image from "next/image";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Feature from "../components/Feature";
+
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [responseMessage, setResponseMessage] = useState("");
+
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      setResponseMessage(result.message); // Show success or error message
+    } catch (error) {
+      setResponseMessage("Failed to send the message. Please try again.");
+    }
+  };
+
   return (
     <main className="bg-white">
       <Link href="/"></Link>
+
       {/* Hero Section */}
       <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
@@ -19,10 +57,7 @@ export default function Contact() {
             <Link href="/" className="font-semibold text-[16px] text-black">
               Home
             </Link>
-            <Icon
-              icon="material-symbols:keyboard-arrow-right"
-              className="w-5 h-5"
-            />
+            <Icon icon="material-symbols:keyboard-arrow-right" className="w-5 h-5" />
             <p className="font-light text-[16px] text-black">Contact</p>
           </div>
         </div>
@@ -30,9 +65,7 @@ export default function Contact() {
 
       {/* Contact Form and Info Section */}
       <section className="container mx-auto py-16 px-4 md:px-0">
-        <h2 className="text-center text-2xl font-bold mb-4">
-          Get In Touch With Us
-        </h2>
+        <h2 className="text-center text-2xl font-bold mb-4">Get In Touch With Us</h2>
         <p className="text-center text-gray-600 mb-12">
           For more information about our product & services, please feel free to
           drop us <br /> an email. Our staff is always here to help you out. Do
@@ -68,42 +101,46 @@ export default function Contact() {
 
           {/* Contact Form */}
           <div className="md:w-1/2">
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Your Name
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Your Name</label>
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
                   className="mt-1 p-3 w-full border rounded-md"
                   placeholder="Abc"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Email Address
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Email Address</label>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   className="mt-1 p-3 w-full border rounded-md"
                   placeholder="abc@def.com"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Subject
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Subject</label>
                 <input
                   type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
                   className="mt-1 p-3 w-full border rounded-md"
                   placeholder="This is optional"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Message
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Message</label>
                 <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
                   className="mt-1 p-3 w-full border rounded-md"
                   rows={4}
                   placeholder="Hi! I'd like to ask about..."
@@ -116,9 +153,12 @@ export default function Contact() {
                 Submit
               </button>
             </form>
+            {responseMessage && <p className="mt-4 text-green-500">{responseMessage}</p>} {/* Show response */}
           </div>
         </div>
       </section>
+
+      {/* Optional components */}
       <Field />
       <Feature />
     </main>

@@ -17,6 +17,7 @@ export default function page (){
          <Product/>                               
             <RoomInspiration/>
             <Funiro/>
+      
             
           
       

@@ -6,6 +6,10 @@ import Image from "next/image";
 import { Product } from "../types/products";
 import { getCartItems } from "../actions/actions";
 import { urlFor } from "@/sanity/lib/image";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { client } from "@/sanity/lib/client";
+import Swal from "sweetalert2";
 
 const Checkout = () => {
   const [cartItems, setCartItems] = useState<Product[]>([]);
@@ -56,29 +60,84 @@ const Checkout = () => {
 
   const validateForm = () => {
     const errors = {
-      firstName: !formValues.firstName.trim(),
-      lastName: !formValues.lastName.trim(),
-      country: !formValues.country.trim(),
-      streetAddress: !formValues.streetAddress.trim(),
-      city: !formValues.city.trim(),
-      province: !formValues.province.trim(),
-      zipCode: !formValues.zipCode.trim(),
-      phoneNumber: !formValues.phoneNumber.match(/^[0-9]{10}$/),
-      emailAddress: !formValues.emailAddress.includes("@"),
+      firstName: !formValues.firstName,
+      lastName: !formValues.lastName,
+      country: !formValues.country,
+      streetAddress: !formValues.streetAddress,
+      city: !formValues.city,
+      province: !formValues.province,
+      zipCode: !formValues.zipCode,
+      phoneNumber: !formValues.phoneNumber,
+      emailAddress: !formValues.emailAddress,
     };
     setFormErrors(errors);
     return Object.values(errors).every((error) => !error);
   };
 
-  const handlePlaceOrder = () => {
-    if (validateForm()) {
+  const handlePlaceOrder = async () => {
+    const total = subTotal - discount;
+
+    Swal.fire({
+      title: "Processing",
+      text: "Please wait a moment", 
+      icon: "info",
+      showCancelButton: true, 
+      confirmButtonColor: "#308566",
+      cancelButtonColor: "#ed3333",
+      confirmButtonText: "Proceed", // Corrected 'confirmButtonTest' to 'confirmButtonText'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (validateForm()) {
+          localStorage.removeItem("appliedDiscount");
+          Swal.fire(
+            "Success",
+            "Your order has been successfully processed!",
+            "success"
+          );
+        } else {
+          Swal.fire(
+            "Error",
+            "Please fill all the fields before proceeding",
+            "error"
+          );
+        }
+      }
+    });
+    
+    const orderData = {
+      _type: "order",
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      country: formValues.country,
+      streetAddress: formValues.streetAddress,
+      city: formValues.city,
+      province: formValues.province,
+      zipCode: formValues.zipCode,
+      phoneNumber: formValues.phoneNumber,
+      emailAddress: formValues.emailAddress,
+      cartItems: cartItems.map((item) => ({
+        _type: "reference",
+        _ref: item._id,
+      })),
+
+      total: total,
+      discount: discount,
+      orderDate: new Date().toISOString(),
+    };
+
+    try {
+      await client.create(orderData);
       localStorage.removeItem("appliedDiscount");
-      alert("Order placed successfully!");
+      toast.success("Order placed successfully!");
+    } catch (error) {
+      console.error("error creating order", error);
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
   return (
     <main className="bg-white">
+      <ToastContainer position="top-right" />
       {/* Hero Section */}
       <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
@@ -102,21 +161,58 @@ const Checkout = () => {
         <div className="flex flex-col lg:flex-row gap-6 md:gap-12">
           {/* Billing Form */}
           <div className="lg:w-2/3 space-y-6">
-            <h2 className="text-xl md:text-2xl font-bold mb-6">Billing Details</h2>
+            <h2 className="text-xl md:text-2xl font-bold mb-6">
+              Billing Details
+            </h2>
             <form className="space-y-6">
               {[
-                { id: "firstName", label: "First Name", placeholder: "Enter your first name" },
-                { id: "lastName", label: "Last Name", placeholder: "Enter your last name" },
-                { id: "country", label: "Country", placeholder: "Enter your country" },
-                { id: "streetAddress", label: "Street Address", placeholder: "Enter your street address" },
+                {
+                  id: "firstName",
+                  label: "First Name",
+                  placeholder: "Enter your first name",
+                },
+                {
+                  id: "lastName",
+                  label: "Last Name",
+                  placeholder: "Enter your last name",
+                },
+                {
+                  id: "country",
+                  label: "Country",
+                  placeholder: "Enter your country",
+                },
+                {
+                  id: "streetAddress",
+                  label: "Street Address",
+                  placeholder: "Enter your street address",
+                },
                 { id: "city", label: "City", placeholder: "Enter your city" },
-                { id: "province", label: "Province", placeholder: "Enter your province" },
-                { id: "zipCode", label: "Zip Code", placeholder: "Enter your zip code" },
-                { id: "phoneNumber", label: "Phone Number", placeholder: "Enter your phone number" },
-                { id: "emailAddress", label: "Email Address", placeholder: "Enter your email address" },
+                {
+                  id: "province",
+                  label: "Province",
+                  placeholder: "Enter your province",
+                },
+                {
+                  id: "zipCode",
+                  label: "Zip Code",
+                  placeholder: "Enter your zip code",
+                },
+                {
+                  id: "phoneNumber",
+                  label: "Phone Number",
+                  placeholder: "Enter your phone number",
+                },
+                {
+                  id: "emailAddress",
+                  label: "Email Address",
+                  placeholder: "Enter your email address",
+                },
               ].map((field) => (
                 <div key={field.id}>
-                  <label htmlFor={field.id} className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor={field.id}
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {field.label}
                   </label>
                   <input

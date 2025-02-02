@@ -131,7 +131,12 @@ export default function Cart() {
                   <tr key={item._id} className="border-b">
                     <td className="p-3 flex items-center space-x-4">
                       <img
-                        src={item.imageUrl || "/images/default-product.png"}
+                        src={
+                          typeof item.imageUrl === "string"
+                            ? item.imageUrl
+                            : item.imageUrl?.asset?._ref ||
+                              "/images/default-product.png"
+                        }
                         alt={item.title}
                         className="w-16 h-16 object-cover"
                       />
@@ -200,9 +205,7 @@ export default function Cart() {
         </div>
       </section>
 
-    
       <Feature />
-      
     </div>
   );
 }
