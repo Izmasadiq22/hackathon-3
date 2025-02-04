@@ -20,6 +20,8 @@ export default function Blog() {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 4;
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   // Blog posts data
   const blogPosts = [
     {
@@ -89,7 +91,53 @@ export default function Blog() {
 
   return (
     <div>
-      <Link href="/"></Link>
+      {/* Navbar */}
+      <nav className="bg-[#FFF3E3] fixed top-0 left-0 w-full z-10 p-4 shadow-md">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <Image src="/images/logo.png" alt="logo" width={50} height={50} />
+
+          {/* Hamburger Icon */}
+          <div
+            className="lg:hidden cursor-pointer"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <Icon icon="mdi:menu" className="w-8 h-8" />
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex gap-6">
+            <Link href="/" className="font-semibold text-black">
+              Home
+            </Link>
+            <Link href="/cart" className="font-semibold text-black">
+              blog
+            </Link>
+           
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="lg:hidden mt-2 bg-[#FFF3E3] p-4 rounded-md">
+            <Link
+              href="/"
+              className="block font-semibold text-black mb-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href="/cart"
+              className="block font-semibold text-black mb-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              Blog
+            </Link>
+           
+          </div>
+        )}
+      </nav>
 
       {/* Hero Section */}
       <section
@@ -161,6 +209,7 @@ export default function Blog() {
           </div>
 
           <div className="flex flex-col gap-[39px]">
+            {/* Recent Posts */}
             <div className="flex gap-[12px] items-center">
               <Image
                 src="/images/pic1.png"
@@ -197,59 +246,7 @@ export default function Blog() {
               </div>
             </div>
 
-            <div className="flex gap-[12px] items-center">
-              <Image
-                src="/images/pic3.png"
-                alt="recentimg"
-                height={120}
-                width={120}
-                className="rounded-[10px]"
-              />
-              <div>
-                <p className="text-[14px] text-black font-normal">
-                  Handmade pieces that took time to make
-                </p>
-                <p className="text-[12px] text-[#9F9F9F] font-normal">
-                  10 Oct 2022
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-[12px] items-center">
-              <Image
-                src="/images/pic4.png"
-                alt="recentimg"
-                height={120}
-                width={120}
-                className="rounded-[10px]"
-              />
-              <div>
-                <p className="text-[14px] text-black font-normal">
-                  Modern items in motion
-                </p>
-                <p className="text-[12px] text-[#9F9F9F] font-normal">
-                  05 Oct 2022
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-[12px] items-center">
-              <Image
-                src="/images/pic5.png"
-                alt="recentimg"
-                height={120}
-                width={120}
-                className="rounded-[10px]"
-              />
-              <div>
-                <p className="text-[14px] text-black font-normal">
-                  Colorful office redesign
-                </p>
-                <p className="text-[12px] text-[#9F9F9F] font-normal">
-                  02 Oct 2022
-                </p>
-              </div>
-            </div>
+            {/* Add other recent posts here */}
           </div>
         </aside>
       </div>

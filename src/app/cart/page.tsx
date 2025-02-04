@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Feature from "../components/Feature";
@@ -15,6 +16,7 @@ import { useRouter } from "next/navigation";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState<Product[]>([]);
+  const [menuOpen, setMenuOpen] = useState(false); // Hamburger menu state
 
   useEffect(() => {
     setCartItems(getCartItems());
@@ -80,7 +82,6 @@ export default function Cart() {
         );
 
         router.push("/checkout");
-
         setCartItems([]);
       }
     });
@@ -88,11 +89,65 @@ export default function Cart() {
 
   return (
     <div>
-      <Link href="/cart"></Link>
+      {/* Navbar */}
+      <nav className="bg-[#FFF3E3] fixed top-0 left-0 w-full z-10 p-4 shadow-md">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <Image src="/images/logo.png" alt="logo" width={50} height={50} />
+
+          {/* Hamburger Icon */}
+          <div
+            className="lg:hidden cursor-pointer"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <Icon icon="mdi:menu" className="w-8 h-8" />
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex gap-6">
+            <Link href="/" className="font-semibold text-black">
+              Home
+            </Link>
+            <Link href="/cart" className="font-semibold text-black">
+              Cart
+            </Link>
+            <Link href="/checkout" className="font-semibold text-black">
+              Checkout
+            </Link>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="lg:hidden mt-2 bg-[#FFF3E3] p-4 rounded-md">
+            <Link
+              href="/"
+              className="block font-semibold text-black mb-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href="/cart"
+              className="block font-semibold text-black mb-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              Cart
+            </Link>
+            <Link
+              href="/checkout"
+              className="block font-semibold text-black"
+              onClick={() => setMenuOpen(false)}
+            >
+              Checkout
+            </Link>
+          </div>
+        )}
+      </nav>
 
       {/* Hero Section */}
       <section
-        className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
+        className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center mt-16"
         style={{ backgroundImage: "url('/images/Rectangle 1.png')" }}
       >
         <div className="flex flex-col items-center">
@@ -130,7 +185,7 @@ export default function Cart() {
                 {cartItems.map((item) => (
                   <tr key={item._id} className="border-b">
                     <td className="p-3 flex items-center space-x-4">
-                      <img
+                      <Image
                         src={
                           typeof item.imageUrl === "string"
                             ? item.imageUrl
@@ -138,7 +193,9 @@ export default function Cart() {
                               "/images/default-product.png"
                         }
                         alt={item.title}
-                        className="w-16 h-16 object-cover"
+                        width={64}
+                        height={64}
+                        className="object-cover"
                       />
                       <span>{item.title}</span>
                     </td>
@@ -197,7 +254,7 @@ export default function Cart() {
             </div>
             <button
               onClick={handleProceed}
-              className=" w-full bg-[#B88E2F] text-white py-3 border border-black font-bold rounded-xl hover:bg-[#ecb431]"
+              className="w-full bg-[#B88E2F] text-white py-3 border border-black font-bold rounded-xl hover:bg-[#ecb431]"
             >
               Check Out
             </button>

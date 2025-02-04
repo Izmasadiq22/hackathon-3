@@ -39,6 +39,7 @@ const ProductCard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [visibleProducts, setVisibleProducts] = useState<number>(8);
   const [wishlist, setWishlist] = useState<Product[]>([]); // Wishlist state
+  const [menuOpen, setMenuOpen] = useState(false); // Hamburger menu state
 
   const fetchProducts = async () => {
     try {
@@ -164,6 +165,51 @@ const ProductCard: React.FC = () => {
 
   return (
     <div>
+      {/* Navbar */}
+      <nav className="bg-[#FFF3E3] fixed top-0 left-0 w-full z-10 p-4 shadow-md">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <Image src="/images/logo.png" alt="logo" width={50} height={50} />
+
+          {/* Hamburger Icon */}
+          <div
+            className="lg:hidden cursor-pointer"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <Icon icon="mdi:menu" className="w-8 h-8" />
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex gap-6">
+            <Link href="/" className="font-semibold text-black">
+              Home
+            </Link>
+            <Link href="/cart" className="font-semibold text-black">
+              Shop
+            </Link>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="lg:hidden mt-2 bg-[#FFF3E3] p-4 rounded-md">
+            <Link
+              href="/"
+              className="block font-semibold text-black mb-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href="/cart"
+              className="block font-semibold text-black mb-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              Shop
+            </Link>
+          </div>
+        )}
+      </nav>
       {/* Hero Section */}
       <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
