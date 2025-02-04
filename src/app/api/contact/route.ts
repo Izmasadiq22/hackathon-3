@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json(); // Parse the incoming request body
     
-    const { name, email, subject, message } = body;
+    const { name, email, message } = body;
 
     // Simulate backend logic (log the message)
     console.log(`Message received from ${name} (${email}): ${message}`);

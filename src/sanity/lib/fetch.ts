@@ -6,11 +6,16 @@ const client = createClient({
   dataset: 'production', // Your Sanity dataset
   useCdn: true,
   apiVersion: '2025-01-13',
-  token: process.env.SANITY_API_TOKEN || 'skiAtRblg3mK3mtUqGWVhZt0yxgLbdi78FS3WdccxVlYPbprXplFb99LaDk5FGxIWQ5zivj21rVpqXMd5yWktZUfNFG8kYftOCUjEfjuwOKftconHfy7oZ1fFToybGabfsaeb5umpoXu1BscgGNd6DXpcOBBUmE62WBGcfVpUsjfv2FpFwk2', // Using environment variable for the token
+  token: process.env.SANITY_API_TOKEN || 'your_sanity_api_token', // Using environment variable for the token
 });
 
+// Define types for your query parameters
+interface SanityFetchParams {
+  [key: string]: string | number | boolean; // Example type for query params
+}
+
 // Fetch function definition
-export async function sanityFetch({ query, params = {} }: { query: string, params?: any }) {
+export async function sanityFetch({ query, params = {} }: { query: string, params?: SanityFetchParams }) {
   try {
     const data = await client.fetch(query, params);
     return data;

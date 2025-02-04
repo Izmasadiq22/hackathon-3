@@ -18,20 +18,6 @@ const sanity = createClient({
   apiVersion: "2023-01-01",
 });
 
-// export interface Product {
-//   _id: string;
-//   title: string;
-//   price: number;
-//   imageUrl: string;
-//   tags: string | string[];
-//   slug: { current: string };
-//   discountPercentage: number;
-//   discountedPrice: number;
-//   isNew: boolean;
-//   description: string;
-//   inventory: number;
-// }
-
 const ProductCard: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -58,7 +44,7 @@ const ProductCard: React.FC = () => {
 
       const data = await sanity.fetch(query);
 
-      const transformedData = data.map((product: any) => ({
+      const transformedData = data.map((product: Product) => ({
         ...product,
         imageUrl: product.imageUrl || "",
       }));
@@ -210,6 +196,7 @@ const ProductCard: React.FC = () => {
           </div>
         )}
       </nav>
+
       {/* Hero Section */}
       <section
         className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"

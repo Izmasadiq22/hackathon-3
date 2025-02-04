@@ -1,11 +1,10 @@
-"use client"
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 import Field from "../components/Field";
 import Image from "next/image";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Feature from "../components/Feature";
-
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -15,7 +14,7 @@ export default function Contact() {
     message: "",
   });
   const [responseMessage, setResponseMessage] = useState("");
-   const [menuOpen, setMenuOpen] = useState(false); // Hamburger menu state
+  const [menuOpen, setMenuOpen] = useState(false); // Hamburger menu state
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -39,7 +38,7 @@ export default function Contact() {
       const result = await response.json();
       setResponseMessage(result.message); // Show success or error message
     } catch (error) {
-      setResponseMessage("Failed to send the message. Please try again.");
+      setResponseMessage("Failed to send the message. Please try again."); // Set message on error
     }
   };
 
@@ -90,7 +89,6 @@ export default function Contact() {
           </div>
         )}
       </nav>
-      <Link href="/"></Link>
 
       {/* Hero Section */}
       <section
