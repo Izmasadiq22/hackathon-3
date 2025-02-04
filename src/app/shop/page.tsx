@@ -24,7 +24,7 @@ const ProductCard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [visibleProducts, setVisibleProducts] = useState<number>(8);
-  const [wishlist, setWishlist] = useState<Product[]>([]); // Wishlist state
+  const [, setWishlist] = useState<Product[]>([]); // Wishlist state
   const [menuOpen, setMenuOpen] = useState(false); // Hamburger menu state
 
   const fetchProducts = async () => {

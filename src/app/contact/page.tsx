@@ -38,6 +38,7 @@ export default function Contact() {
       const result = await response.json();
       setResponseMessage(result.message); // Show success or error message
     } catch (error) {
+      console.error("Error occurred:", error); // Log the error
       setResponseMessage("Failed to send the message. Please try again."); // Set message on error
     }
   };
