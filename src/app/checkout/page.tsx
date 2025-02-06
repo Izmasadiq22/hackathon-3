@@ -83,7 +83,7 @@ const Checkout = () => {
       showCancelButton: true, 
       confirmButtonColor: "#308566",
       cancelButtonColor: "#ed3333",
-      confirmButtonText: "Proceed", // Corrected 'confirmButtonTest' to 'confirmButtonText'
+      confirmButtonText: "Proceed",
     }).then((result) => {
       if (result.isConfirmed) {
         if (validateForm()) {

@@ -19,10 +19,8 @@ export default function Blog() {
   const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 4;
-
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Blog posts data
   const blogPosts = [
     {
       id: 1,
@@ -53,7 +51,6 @@ export default function Blog() {
     },
   ];
 
-  // Fetch products from Sanity
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -73,7 +70,6 @@ export default function Blog() {
     fetchProducts();
   }, []);
 
-  // Calculate the range of products to be displayed
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(
@@ -81,10 +77,8 @@ export default function Blog() {
     indexOfLastProduct
   );
 
-  // Total number of pages
   const totalPages = Math.ceil(products.length / productsPerPage);
 
-  // Handle page change
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -94,10 +88,7 @@ export default function Blog() {
       {/* Navbar */}
       <nav className="bg-[#FFF3E3] fixed top-0 left-0 w-full z-10 p-4 shadow-md">
         <div className="flex justify-between items-center">
-          {/* Logo */}
           <Image src="/images/logo.png" alt="logo" width={50} height={50} />
-
-          {/* Hamburger Icon */}
           <div
             className="lg:hidden cursor-pointer"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -105,36 +96,16 @@ export default function Blog() {
             <Icon icon="mdi:menu" className="w-8 h-8" />
           </div>
 
-          {/* Desktop Navigation */}
           <div className="hidden lg:flex gap-6">
-            <Link href="/" className="font-semibold text-black">
-              Home
-            </Link>
-            <Link href="/cart" className="font-semibold text-black">
-              blog
-            </Link>
-           
+            <Link href="/" className="font-semibold text-black">Home</Link>
+            <Link href="/cart" className="font-semibold text-black">Blog</Link>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {menuOpen && (
           <div className="lg:hidden mt-2 bg-[#FFF3E3] p-4 rounded-md">
-            <Link
-              href="/"
-              className="block font-semibold text-black mb-2"
-              onClick={() => setMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              href="/cart"
-              className="block font-semibold text-black mb-2"
-              onClick={() => setMenuOpen(false)}
-            >
-              Blog
-            </Link>
-           
+            <Link href="/" className="block font-semibold text-black mb-2" onClick={() => setMenuOpen(false)}>Home</Link>
+            <Link href="/cart" className="block font-semibold text-black mb-2" onClick={() => setMenuOpen(false)}>Blog</Link>
           </div>
         )}
       </nav>
@@ -148,13 +119,8 @@ export default function Blog() {
           <Image src="/images/logo.png" alt="logo" width={50} height={50} />
           <h2 className="font-medium text-[48px] text-black">Blog</h2>
           <div className="flex items-center gap-1">
-            <Link href="/" className="font-semibold text-[16px] text-black">
-              Home
-            </Link>
-            <Icon
-              icon="material-symbols:keyboard-arrow-right"
-              className="w-5 h-5"
-            />
+            <Link href="/" className="font-semibold text-[16px] text-black">Home</Link>
+            <Icon icon="material-symbols:keyboard-arrow-right" className="w-5 h-5" />
             <p className="font-light text-[16px] text-black">Blog</p>
           </div>
         </div>
@@ -162,7 +128,6 @@ export default function Blog() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-5 grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Blog Posts Section */}
         <div className="lg:col-span-3 space-y-8">
           {blogPosts.map((post) => (
             <div key={post.id} className="flex flex-col space-y-4">
@@ -174,28 +139,21 @@ export default function Blog() {
                 className="w-full rounded-lg"
               />
               <div className="text-sm text-gray-500">
-                <span>{post.author}</span> &middot; <span>{post.date}</span>{" "}
-                &middot; <span>{post.category}</span>
+                <span>{post.author}</span> &middot; <span>{post.date}</span> &middot; <span>{post.category}</span>
               </div>
               <h2 className="text-xl font-semibold">{post.title}</h2>
               <p className="text-gray-700">{post.description}</p>
-              <a href="#" className="text-orange-500 font-semibold">
-                Read more
-              </a>
+              <Link href="#" className="text-orange-500 font-semibold">Read more</Link>
             </div>
           ))}
         </div>
 
-        {/* Sidebar */}
         <aside className="space-y-8">
           {/* Search */}
           <div className="relative">
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-full border rounded-lg p-2"
-            />
+            <input type="text" placeholder="Search" className="w-full border rounded-lg p-2" />
           </div>
+
           {/* Categories Section */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Categories</h3>
@@ -208,50 +166,28 @@ export default function Blog() {
             </ul>
           </div>
 
-          <div className="flex flex-col gap-[39px]">
-            {/* Recent Posts */}
+          {/* Recent Posts */}
+          <div className="flex flex-col gap-[12px]">
             <div className="flex gap-[12px] items-center">
-              <Image
-                src="/images/pic1.png"
-                alt="recentimg"
-                height={120}
-                width={120}
-                className="rounded-[10px]"
-              />
+              <Image src="/images/pic1.png" alt="recentimg" height={120} width={120} className="rounded-[10px]" />
               <div>
-                <p className="text-[14px] text-black font-normal">
-                  Going all-in with millennial design
-                </p>
-                <p className="text-[12px] text-[#9F9F9F] font-normal">
-                  03 Aug 2022
-                </p>
+                <p className="text-[14px] text-black font-normal">Going all-in with millennial design</p>
+                <p className="text-[12px] text-[#9F9F9F] font-normal">03 Aug 2022</p>
               </div>
             </div>
 
             <div className="flex gap-[12px] items-center">
-              <Image
-                src="/images/pic2.png"
-                alt="recentimg"
-                height={120}
-                width={120}
-                className="rounded-[10px]"
-              />
+              <Image src="/images/pic2.png" alt="recentimg" height={120} width={120} className="rounded-[10px]" />
               <div>
-                <p className="text-[14px] text-black font-normal">
-                  Exploring new ways of decorating
-                </p>
-                <p className="text-[12px] text-[#9F9F9F] font-normal">
-                  14 Oct 2022
-                </p>
+                <p className="text-[14px] text-black font-normal">Exploring new ways of decorating</p>
+                <p className="text-[12px] text-[#9F9F9F] font-normal">14 Oct 2022</p>
               </div>
             </div>
-
-            {/* Add other recent posts here */}
           </div>
         </aside>
       </div>
 
-      {/* Products Section Above Feature */}
+      {/* Products Section */}
       <section className="products-section">
         <h3 className="text-2xl font-semibold mb-4 px-5">Products</h3>
         {currentProducts.length > 0 && (
@@ -281,15 +217,13 @@ export default function Blog() {
           </div>
         )}
 
-        {/* Pagination for Products (Horizontal at Bottom) */}
+        {/* Pagination */}
         <div className="flex justify-center space-x-3 mt-8 mb-8">
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index}
               onClick={() => handlePageChange(index + 1)}
-              className={`border px-4 py-2 ${
-                currentPage === index + 1 ? "bg-[#B88E2F] text-white" : ""
-              }`}
+              className={`border px-4 py-2 ${currentPage === index + 1 ? "bg-[#B88E2F] text-white" : ""}`}
             >
               {index + 1}
             </button>

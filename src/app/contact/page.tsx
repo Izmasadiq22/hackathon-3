@@ -14,32 +14,26 @@ export default function Contact() {
     message: "",
   });
   const [responseMessage, setResponseMessage] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false); // Hamburger menu state
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
       const result = await response.json();
-      setResponseMessage(result.message); // Show success or error message
+      setResponseMessage(result.message);
     } catch (error) {
-      console.error("Error occurred:", error); // Log the error
-      setResponseMessage("Failed to send the message. Please try again."); // Set message on error
+      console.error("Error occurred:", error);
+      setResponseMessage("Failed to send the message. Please try again.");
     }
   };
 
@@ -48,43 +42,21 @@ export default function Contact() {
       {/* Navbar */}
       <nav className="bg-[#FFF3E3] fixed top-0 left-0 w-full z-10 p-4 shadow-md">
         <div className="flex justify-between items-center">
-          {/* Logo */}
           <Image src="/images/logo.png" alt="logo" width={50} height={50} />
-
-          {/* Hamburger Icon */}
-          <div
-            className="lg:hidden cursor-pointer"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
+          <div className="lg:hidden cursor-pointer" onClick={() => setMenuOpen(!menuOpen)}>
             <Icon icon="mdi:menu" className="w-8 h-8" />
           </div>
-
-          {/* Desktop Navigation */}
           <div className="hidden lg:flex gap-6">
-            <Link href="/" className="font-semibold text-black">
-              Home
-            </Link>
-            <Link href="/cart" className="font-semibold text-black">
-              Contact
-            </Link>
+            <Link href="/" className="font-semibold text-black">Home</Link>
+            <Link href="/cart" className="font-semibold text-black">Contact</Link>
           </div>
         </div>
-
-        {/* Mobile Menu */}
         {menuOpen && (
           <div className="lg:hidden mt-2 bg-[#FFF3E3] p-4 rounded-md">
-            <Link
-              href="/"
-              className="block font-semibold text-black mb-2"
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link href="/" className="block font-semibold text-black mb-2" onClick={() => setMenuOpen(false)}>
               Home
             </Link>
-            <Link
-              href="/cart"
-              className="block font-semibold text-black mb-2"
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link href="/cart" className="block font-semibold text-black mb-2" onClick={() => setMenuOpen(false)}>
               Contact
             </Link>
           </div>
@@ -92,17 +64,14 @@ export default function Contact() {
       </nav>
 
       {/* Hero Section */}
-      <section
-        className="bg-[#FFF3E3] relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-center"
+      <section className="bg-[#FFF3E3] relative bg-cover bg-center min-h-[300px] flex flex-col justify-center items-center text-center"
         style={{ backgroundImage: "url('/images/Rectangle 1.png')" }}
       >
         <div className="flex flex-col items-center">
           <Image src="/images/logo.png" alt="logo" width={50} height={50} />
-          <h2 className="font-medium text-[48px] text-black">Contact</h2>
+          <h2 className="font-medium text-[32px] sm:text-[48px] text-black">Contact</h2>
           <div className="flex items-center gap-1">
-            <Link href="/" className="font-semibold text-[16px] text-black">
-              Home
-            </Link>
+            <Link href="/" className="font-semibold text-[16px] text-black">Home</Link>
             <Icon icon="material-symbols:keyboard-arrow-right" className="w-5 h-5" />
             <p className="font-light text-[16px] text-black">Contact</p>
           </div>
@@ -110,16 +79,15 @@ export default function Contact() {
       </section>
 
       {/* Contact Form and Info Section */}
-      <section className="container mx-auto py-16 px-4 md:px-0">
+      <section className="container mx-auto py-16 px-4 md:px-8">
         <h2 className="text-center text-2xl font-bold mb-4">Get In Touch With Us</h2>
         <p className="text-center text-gray-600 mb-12">
           For more information about our product & services, please feel free to
-          drop us <br /> an email. Our staff is always here to help you out. Do
-          not hesitate!
+          drop us <br className="hidden sm:block" /> an email. Our staff is always here to help you out.
         </p>
-        <div className="flex flex-col md:flex-row gap-12">
+        <div className="grid md:grid-cols-2 gap-12">
           {/* Contact Info */}
-          <div className="md:w-1/2 space-y-8">
+          <div className="space-y-8">
             <div className="flex items-center">
               <i className="text-yellow-500 text-xl fas fa-map-marker-alt mr-4"></i>
               <div>
@@ -146,7 +114,7 @@ export default function Contact() {
           </div>
 
           {/* Contact Form */}
-          <div className="md:w-1/2">
+          <div>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Your Name</label>
@@ -192,14 +160,11 @@ export default function Contact() {
                   placeholder="Hi! I'd like to ask about..."
                 ></textarea>
               </div>
-              <button
-                type="submit"
-                className="bg-yellow-500 text-white px-16 py-3 rounded-md"
-              >
+              <button type="submit" className="bg-yellow-500 text-white px-16 py-3 rounded-md">
                 Submit
               </button>
             </form>
-            {responseMessage && <p className="mt-4 text-green-500">{responseMessage}</p>} {/* Show response */}
+            {responseMessage && <p className="mt-4 text-green-500">{responseMessage}</p>}
           </div>
         </div>
       </section>
