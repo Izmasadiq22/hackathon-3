@@ -254,7 +254,7 @@ export default function Cart() {
             </div>
             <button
               onClick={handleProceed}
-              className="w-full bg-[#B88E2F] text-white py-3 border border-black font-bold rounded-xl hover:bg-[#ecb431]"
+             className="text-black font-normal md:text-[20px] text-[15px] border border-black rounded-[15px] py-[10px] px-[14px] md:py-[16px] md:px-[40px] w-fit h-fit"
             >
               Check Out
             </button>

@@ -22,7 +22,6 @@ const ProductCard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [visibleProducts, setVisibleProducts] = useState(8);
 
-  // Fetch products from Sanity
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -49,10 +48,8 @@ const ProductCard: React.FC = () => {
     fetchProducts();
   }, []);
 
-  // Handle "See More" functionality
   const handleShowMore = () => setVisibleProducts((prev) => prev + 8);
 
-  // Handle Add to Cart
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
     Swal.fire({
@@ -75,9 +72,8 @@ const ProductCard: React.FC = () => {
         {products.slice(0, visibleProducts).map((product) => (
           <div
             key={product._id}
-            className="relative bg-white shadow-md rounded-md overflow-hidden transform hover:scale-105 transition-all duration-300"
+            className="relative bg-white shadow-md rounded-md overflow-hidden group"
           >
-            {/* Product Image */}
             <Link href={`/product/${product.slug.current}`}>
               {product.imageUrl && (
                 <Image
@@ -90,19 +86,35 @@ const ProductCard: React.FC = () => {
               )}
             </Link>
 
-            <button
-              className="bg-amber-700 text-white font-semibold mt-4 ml-40 py-2 px-4 rounded-lg shadow-md hover:shadow-lg hover:scale-110 transition-transform duration-300 ease-in-out"
-              onClick={(e) => handleAddToCart(e, product)}
-            >
-              Add To Cart
-            </button>
+            {/* Hover Overlay */}
+            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+              <div className="space-x-3 text-white text-sm ">
+                
+                <button 
+                  className="bg-amber-600 px-4 py-2 rounded shadow hover:shadow-lg mb-4"
+                  onClick={(e) => handleAddToCart(e, product)}
+                >
+                  Add to Cart
+                </button>
+             
+                {/* Navigate to Product Detail Page */}
+                <Link href={`/product/${product.slug.current}`}>
+                  <button className="bg-amber-600 px-4 py-2 rounded shadow hover:shadow-lg">
+                    View Image
+                  </button>
+                </Link>
 
-            {/* Product Details */}
+               <div>
+                <button className="border border-white px-3 py-1 rounded hover:bg-white hover:text-black gap-2">Share</button>
+                <button className="border border-white px-3 py-1 rounded hover:bg-white hover:text-black">Compare</button>
+                <button className="border border-white px-3 py-1 rounded hover:bg-white hover:text-black">Like</button>
+             </div>
+              </div>
+            </div>
+
             <div className="p-4">
               <h3 className="text-lg font-semibold">{product.title}</h3>
               <p className="text-sm text-gray-500">{product.tags}</p>
-
-              {/* Price */}
               <div className="mt-2">
                 <span className="text-[#B88E2F] font-bold text-lg">
                   ${product.discountedPrice || product.price}
@@ -122,8 +134,6 @@ const ProductCard: React.FC = () => {
           </div>
         ))}
       </div>
-
-      {/* See More Button */}
       {visibleProducts < products.length && (
         <div className="flex justify-center mt-8">
           <button
