@@ -6,6 +6,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import { BsCart3 } from "react-icons/bs";
 import Link from 'next/link';
 
+
 export function Header() {
   return (
     <header className="flex items-center justify-between px-8 py-5 border-b border-gray-200">
@@ -21,7 +22,14 @@ export function Header() {
         <Link href="/shop" className="text-gray-700 font-medium hover:text-[#B88E2F]">Shop</Link>
         <Link href="/blog" className="text-gray-700 font-medium hover:text-[#B88E2F]">Blog</Link>
         <Link href="/contact" className="text-gray-700 font-medium hover:text-[#B88E2F]">Contact</Link>
-        
+        {/* <ClerkProvider>
+            <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          </ClerkProvider> */}
       </nav>
 
       {/* Icons */}

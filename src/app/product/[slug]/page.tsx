@@ -8,8 +8,9 @@ import Swal from "sweetalert2";
 import { addToCart } from "@/app/actions/actions";
 
 interface ProductPageProps {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
+
 
 async function getProduct(slug: string): Promise<Product> {
   return client.fetch(
@@ -44,7 +45,7 @@ const handleAddToCart = (e: React.MouseEvent, product: Product) => {
 };
 
 export default async function ProductCard({ params }: ProductPageProps) {
-  const { slug } = await params;
+  const { slug } = params;
   const product = await getProduct(slug);
 
   if (!product) {
@@ -73,7 +74,7 @@ export default async function ProductCard({ params }: ProductPageProps) {
         <div>
           {product.imageUrl ? (
             <Image
-              src={urlFor(product.imageUrl).url()}
+            src={urlFor(product.imageUrl).url()}
               alt={product.title}
               width={500}
               height={400}
