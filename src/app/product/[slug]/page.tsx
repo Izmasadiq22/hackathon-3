@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
@@ -11,52 +12,48 @@ interface ProductPageProps {
   params: { slug: string };
 }
 
-
-async function getProduct(slug: string): Promise<Product> {
-  return client.fetch(
-    groq`*[_type == "product" && slug.current == $slug][0]{
-  _id,
-  title,
-  price,
-  "imageUrl": productImage.asset->url, // Update the field name here
-  tags,
-  slug,
-  dicountPercentage,
-  discountedPrice,
-  isNew,
-  description
-}
-`,
-    { slug }
-  );
-}
-
-// Handle Add to Cart
-const handleAddToCart = (e: React.MouseEvent, product: Product) => {
-  e.preventDefault();
-  Swal.fire({
-    position: "bottom-right",
-    icon: "success",
-    title: `${product.title} added to cart`,
-    showConfirmButton: false,
-    timer: 1000,
-  });
-  addToCart(product);
-};
-
-export default async function ProductCard({ params }: ProductPageProps) {
+export default function ProductCard({ params }: ProductPageProps) {
   const { slug } = params;
-  const product = await getProduct(slug);
+  const [product, setProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    async function fetchProduct() {
+      const result = await client.fetch(
+        groq`*[_type == "product" && slug.current == $slug][0]{
+          _id,
+          title,
+          price,
+          "imageUrl": productImage.asset->url,
+          tags,
+          slug,
+          dicountPercentage,
+          discountedPrice,
+          isNew,
+          description
+        }`,
+        { slug }
+      );
+      setProduct(result);
+    }
+
+    fetchProduct();
+  }, [slug]);
+
+  // Handle Add to Cart
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    Swal.fire({
+      position: "bottom-right",
+      icon: "success",
+      title: `${product.title} added to cart`,
+      showConfirmButton: false,
+      timer: 1000,
+    });
+    addToCart(product);
+  };
 
   if (!product) {
-    return (
-      <div>
-        <h1>Product not found!</h1>
-        <p>
-          Make sure the slug is correct and the product exists in the database.
-        </p>
-      </div>
-    );
+    return <h1>Loading...</h1>;
   }
 
   return (
@@ -74,7 +71,7 @@ export default async function ProductCard({ params }: ProductPageProps) {
         <div>
           {product.imageUrl ? (
             <Image
-            src={urlFor(product.imageUrl).url()}
+              src={urlFor(product.imageUrl).url()}
               alt={product.title}
               width={500}
               height={400}

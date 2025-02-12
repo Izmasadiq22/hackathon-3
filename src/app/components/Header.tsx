@@ -5,6 +5,7 @@ import { IoSearch } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa6";
 import { BsCart3 } from "react-icons/bs";
 import Link from 'next/link';
+import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 
 
 export function Header() {
@@ -22,14 +23,14 @@ export function Header() {
         <Link href="/shop" className="text-gray-700 font-medium hover:text-[#B88E2F]">Shop</Link>
         <Link href="/blog" className="text-gray-700 font-medium hover:text-[#B88E2F]">Blog</Link>
         <Link href="/contact" className="text-gray-700 font-medium hover:text-[#B88E2F]">Contact</Link>
-        {/* <ClerkProvider>
+        <ClerkProvider>
             <SignedOut>
             <SignInButton />
           </SignedOut>
           <SignedIn>
             <UserButton />
           </SignedIn>
-          </ClerkProvider> */}
+          </ClerkProvider>
       </nav>
 
       {/* Icons */}

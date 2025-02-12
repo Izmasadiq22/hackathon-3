@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { createClient } from "@sanity/client";
 import Image from "next/image";
 import Link from "next/link";
-import { urlFor } from "@/sanity/lib/image"; // Assuming this function works properly
+import { urlFor } from "@/sanity/lib/image"; 
 import { addToCart } from "../actions/actions";
 import Swal from "sweetalert2";
 import ShopLine from "../components/Shopline";
@@ -11,9 +11,11 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { FaRegHeart } from "react-icons/fa";
 import { Product } from "../types/products";
 
+
+
 const sanity = createClient({
-  projectId: "j1efm4vy", // Replace with your project ID
-  dataset: "production", // Replace with your dataset name
+  projectId: "j1efm4vy", 
+  dataset: "production", 
   useCdn: true,
   apiVersion: "2023-01-01",
 });
@@ -26,6 +28,7 @@ const ProductCard: React.FC = () => {
   const [visibleProducts, setVisibleProducts] = useState<number>(8);
   const [, setWishlist] = useState<Product[]>([]); // Wishlist state
   const [menuOpen, setMenuOpen] = useState(false); // Hamburger menu state
+
 
   const fetchProducts = async () => {
     try {
@@ -150,6 +153,8 @@ const ProductCard: React.FC = () => {
   if (error) return <div>{error}</div>;
 
   return (
+
+   
     <div>
       {/* Navbar */}
       <nav className="bg-[#FFF3E3] fixed top-0 left-0 w-full z-10 p-4 shadow-md">
@@ -318,6 +323,7 @@ const ProductCard: React.FC = () => {
         </div>
       )}
     </div>
+   
   );
 };
 
