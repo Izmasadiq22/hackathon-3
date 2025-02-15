@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
@@ -8,16 +9,14 @@ import { Product } from "@/app/types/products";
 import Swal from "sweetalert2";
 import { addToCart } from "@/app/actions/actions";
 
-interface ProductPageProps {
-  params: { slug: string };
-}
-
-export default function ProductCard({ params }: ProductPageProps) {
-  const { slug } = params;
+export default function ProductCard() {
+  const params = useParams();
+  const slug = params?.slug;
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     async function fetchProduct() {
+      if (!slug) return;
       const result = await client.fetch(
         groq`*[_type == "product" && slug.current == $slug][0]{
           _id,
@@ -35,11 +34,9 @@ export default function ProductCard({ params }: ProductPageProps) {
       );
       setProduct(result);
     }
-
     fetchProduct();
   }, [slug]);
 
-  // Handle Add to Cart
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
     Swal.fire({
@@ -67,7 +64,6 @@ export default function ProductCard({ params }: ProductPageProps) {
       </nav>
 
       <div className="grid md:grid-cols-2 gap-8 mt-8">
-        {/* Product Images */}
         <div>
           {product.imageUrl ? (
             <Image
@@ -82,87 +78,25 @@ export default function ProductCard({ params }: ProductPageProps) {
           )}
         </div>
 
-        {/* Product Details */}
         <div>
           <h3 className="text-2xl font-medium">{product.title}</h3>
           <p className="text-xl text-gray-500">${product.price}</p>
-
           <p className="mt-4 text-gray-700">{product.description}</p>
 
-          <div className="mt-4">
-            <h4 className="font-semibold">Size</h4>
-            <div className="flex gap-2 mt-2">
-              {/* Sizes hardcoded for demo, adjust logic as needed */}
-              {["L", "XL", "XS"].map((size) => (
-                <button
-                  key={size}
-                  className="border rounded-md px-4 py-2 hover:bg-gray-200"
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <h4 className="font-semibold">Color</h4>
-            <div className="flex gap-2 mt-2">
-              {/* Colors hardcoded for demo, adjust logic as needed */}
-              {["bg-purple-700", "bg-blue-500", "bg-green-400"].map(
-                (color, idx) => (
-                  <div
-                    key={idx}
-                    className={`rounded-full h-5 w-5 ${color}`}
-                  ></div>
-                )
-              )}
-            </div>
-          </div>
-
           <div className="flex items-center gap-4 mt-6">
-            <div className="flex items-center border p-2 gap-4">
-              <button>-</button>
-              <span>1</span>
-              <button>+</button>
-            </div>
             <button
-              className="bg-amber-700 text-white font-semibold mt-4 ml-40 py-2 px-4 rounded-lg shadow-md hover:shadow-lg hover:scale-110 transition-transform duration-300 ease-in-out"
+              className="bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg hover:scale-110 transition-transform duration-300 ease-in-out"
               onClick={(e) => handleAddToCart(e, product)}
             >
               Add To Cart
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-lg hover:bg-blue-700 transition duration-300 mt-4"
+              className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-lg hover:bg-blue-700 transition duration-300"
               onClick={() => (window.location.href = "/productComparison")}
             >
               View Comparison
             </button>
-          </div>
-
-          <hr className="my-6" />
-
-          <div>
-            <div className="flex justify-between">
-              <span>SKU:</span>
-              <span>{product._id}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Category:</span>
-              <span>Sofas</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Tags:</span>
-              {/* <span>{product.tags?.join(", ")}</span> */}
-            </div>
-            <div className="flex justify-between items-center mt-4">
-              <span>Share:</span>
-              <div className="flex space-x-2">
-                <span className="text-blue-600 cursor-pointer">Facebook</span>
-                <span className="text-blue-700 cursor-pointer">LinkedIn</span>
-                <span className="text-blue-400 cursor-pointer">Twitter</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>

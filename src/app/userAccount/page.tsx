@@ -13,7 +13,8 @@ function UserAccount() {
         style={{ backgroundImage: "url('/images/Rectangle 1.png')" }}
       >
         <div className="flex flex-col items-center">
-          <Image src="/images/logo.png" alt="logo" width={50} height={50} />
+          <Image src="/images/logo.png" alt="logo" width={50} height={50}
+            style={{ objectFit: "cover" }} />
           <h2 className="font-medium text-[48px] text-black">User Account</h2>
           <div className="flex items-center gap-1">
             <Link href="/" className="font-semibold text-[16px] text-black">

@@ -1,9 +1,10 @@
-"use client"; // Ensure it's a client component
+"use client"; 
 import { useState } from "react";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { HiOutlineTrophy } from "react-icons/hi2";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { MdOutlineSupportAgent } from "react-icons/md";
+import Image from "next/image";
 
 export default function ProductComparison() {
   const [products, setProducts] = useState([
@@ -23,8 +24,8 @@ export default function ProductComparison() {
       id: products.length + 1,
       name: `New Product ${products.length + 1}`,
       price: 200000 + products.length * 10000,
-      rating: parseFloat((Math.random() * 5).toFixed(1)), // Ensuring number format
-      image: "/images/placeholder.png", // Add a default image
+      rating: parseFloat((Math.random() * 5).toFixed(1)), 
+      image: "/images/placeholder.png", 
       details: "New product details",
     };
     setProducts([...products, newProduct]);
@@ -71,9 +72,11 @@ export default function ProductComparison() {
                 {products.map((product) => (
                   <th key={product.id} className="p-4">
                     <div className="text-center">
-                      <img
+                      <Image
                         src={product.image}
                         alt={product.name}
+                        width={150} 
+                        height={100}
                         className="mx-auto h-20"
                       />
                       <p className="font-bold">{product.name}</p>

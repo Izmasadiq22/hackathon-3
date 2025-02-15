@@ -3,12 +3,12 @@ import Image from 'next/image';
 export function Hero() {
   return (
     <section className="relative bg-white">
-      <div className="flex md:justify-end justify-center items-center md:h-[716px] h-[400px] bg-no-repeat bg-center bg-contain bg-[#F4F5F7]">
+      <div className=" relative flex md:justify-end justify-center items-center md:h-[716px] h-[400px] bg-no-repeat bg-center bg-contain bg-[#F4F5F7]">
         {/* Background Image */}
         <Image src="/images/hero.png"
           alt="Hero Background"
-          objectFit="cover"
-          layout="fill"
+          style={{ objectFit: "cover" }}
+          fill
           priority/>
         
 

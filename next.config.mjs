@@ -5,6 +5,10 @@ const nextConfig = {
         domains:["cdn.sanity.io"]
 
     },
+
+    experimental: {
+        middlewarePrefetch: "strict", // Helps with middleware execution
+    },
 };
 
 export default nextConfig;
